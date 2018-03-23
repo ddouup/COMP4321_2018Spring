@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 
 public class StopStem
@@ -21,13 +22,22 @@ public class StopStem
 		porter = new Porter();
 		stopWords = new java.util.HashSet();
 				
-		stopWords.add("is");
-		stopWords.add("am");
-		stopWords.add("are");
-		stopWords.add("was");
-		stopWords.add("were");
+		// stopWords.add("is");
+		// stopWords.add("am");
+		// stopWords.add("are");
+		// stopWords.add("was");
+		// stopWords.add("were");
 
-		
+		try {
+			BufferedReader reader = new BufferedReader(new FileReader(str));
+			String line;
+			while ((line = reader.readLine()) != null) {
+				stopWords.add(line);
+			}
+			reader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	public String stem(String str)
 	{
