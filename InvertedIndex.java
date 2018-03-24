@@ -1,11 +1,3 @@
-/* --
-COMP4321 Lab1 Exercise
-Student Name: xjian
-Student ID:
-Section:
-Email: xjian@ust.hk
-*/
-
 import jdbm.RecordManager;
 import jdbm.RecordManagerFactory;
 import jdbm.htree.HTree;
@@ -18,9 +10,13 @@ public class InvertedIndex
 {
     private RecordManager recman;
     private HTree hashtable;
+    private String RecordManagerName;
+    private String ObjectName;
 
-    InvertedIndex(String recordmanager, String objectname) throws IOException
+    public InvertedIndex(String recordmanager, String objectname) throws IOException
     {
+        RecordManagerName = recordmanager;
+        ObjectName = objectname;
         recman = RecordManagerFactory.createRecordManager(recordmanager);
         long recid = recman.getNamedObject(objectname);
             
@@ -29,10 +25,9 @@ public class InvertedIndex
         else
         {
             hashtable = HTree.createInstance(recman);
-            recman.setNamedObject( objectname, hashtable.getRecid() );
+            recman.setNamedObject( objectname, hashtable.getRecid());
         }
     }
-
 
     public void finalize() throws IOException
     {
@@ -40,63 +35,41 @@ public class InvertedIndex
         recman.close();                
     } 
 
-    public void addEntry(String word, int x, int y) throws IOException
+    public void addEntry(String _key, String _content) throws IOException
     {
         // Add a "docX Y" entry for the key "word" into hashtable
         // ADD YOUR CODES HERE
-        String content = (String)hashtable.get(word);
+        String content = (String)hashtable.get(_key);
         if (content == null) {
-            content = "doc" + x + " " + y;
+            content = _content;
         } else {
-            content += " doc" + x + " " + y;
+            content += "," + _content;
         }
-        hashtable.put(word, content);
+        hashtable.put(_key, content);
     }
-    public void delEntry(String word) throws IOException
+
+    public String getEntry(String _key) throws IOException
     {
-        // Delete the word and its list from the hashtable
+        return hashtable.get(_key).toString();
+    }
+
+    public void delEntry(String _key) throws IOException
+    {
+        // Delete the id and its list from the hashtable
         // ADD YOUR CODES HERE
-        hashtable.remove(word);
-    } 
+        hashtable.remove(_key);
+    }
+
     public void printAll() throws IOException
     {
         // Print all the data in the hashtable
         // ADD YOUR CODES HERE
+        System.out.println("Database: "+ RecordManagerName + "\tHashtable: " + ObjectName);
         FastIterator iter = hashtable.keys();
         String key;
         while( (key=(String)iter.next()) != null ) {
             System.out.println(key + " = " + hashtable.get(key));
         }
-    }    
-    
-    public static void main(String[] args)
-    {
-        try
-        {
-            InvertedIndex index = new InvertedIndex("lab1","ht1");
-    
-            index.addEntry("cat", 2, 6);
-            index.addEntry("dog", 1, 33);
-            System.out.println("First print");
-            index.printAll();
-            
-            index.addEntry("cat", 8, 3);
-            index.addEntry("dog", 6, 73);
-            index.addEntry("dog", 8, 83);
-            index.addEntry("dog", 10, 5);
-            index.addEntry("cat", 11, 106);
-            System.out.println("Second print");
-            index.printAll();
-            
-            index.delEntry("dog");
-            System.out.println("Third print");
-            index.printAll();
-            index.finalize();
-        }
-        catch(IOException ex)
-        {
-            System.err.println(ex.toString());
-        }
-
+        System.out.println("\n");
     }
 }
