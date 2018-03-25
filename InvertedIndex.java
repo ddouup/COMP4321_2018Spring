@@ -43,7 +43,7 @@ public class InvertedIndex
         if (content == null) {
             content = _content;
         } else {
-            content += "," + _content;
+            content += ";" + _content;
         }
         hashtable.put(_key, content);
     }

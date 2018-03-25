@@ -19,13 +19,14 @@ import java.net.URLConnection;
 import java.io.IOException;
 
 public class Crawler
-{
+{	
+	private static int Required_Number = 30;
 	private static int count;
 	private String url;
 	Crawler(String _url)
 	{
 		url = _url;
-		count = 0;
+		count = 1;
 	}
 	public void setURL(String _url)
 	{
@@ -48,7 +49,7 @@ public class Crawler
 		String contents = bean.getStrings();
 		StringTokenizer st = new StringTokenizer(contents);
 		while (st.hasMoreTokens()) {
-		    result.add(st.nextToken());
+			result.add(st.nextToken());
 		}
 
 		//test only
@@ -81,12 +82,21 @@ public class Crawler
 		return result;
 	}
 	
-	public void extractPageInfo()
+	public String extractPageInfo()
 	{
 		try
 		{
 			URL obj = new URL(url);
 			URLConnection conn = obj.openConnection();
+			/*
+			Map<String, List<String>> map = conn.getHeaderFields();
+			System.out.println("Printing Response Header...\n");
+
+			for (Map.Entry<String, List<String>> entry : map.entrySet()) {
+				System.out.println(entry.getKey() + ": " + entry.getValue());
+			}
+			String result = "success";
+			*/
 			
 			long Content_Length = conn.getContentLengthLong();
 			System.out.println("Content_Length: " + Content_Length);
@@ -95,18 +105,15 @@ public class Crawler
 			Date Last_Modified_Date = new Date(Last_Modified);
 			System.out.println("Last_Modified_Date: " + Last_Modified_Date);
 			
-			/* test only
-			Map<String, List<String>> map = conn.getHeaderFields();
-			System.out.println("Printing Response Header...\n");
-
-			for (Map.Entry<String, List<String>> entry : map.entrySet()) {
-				System.out.println(entry.getKey() + ": " + entry.getValue());
-			}*/
 			System.out.println("");
+			String result = Long.toString(Content_Length) + "," + Long.toString(Last_Modified);
+
+	    	return result;
 		}
 		catch (Exception e) 
 		{
 			e.printStackTrace();
+			return "error";
 	    }
 	}
 
@@ -133,48 +140,63 @@ public class Crawler
 	{
 		try
 		{
-			Crawler crawler = new Crawler("http://www.cs.ust.hk/~dlee/4321/");
-
-			//Vector<String> words = crawler.extractWords();		
-
-
+			Crawler crawler = new Crawler("http://www.cse.ust.hk/~dlee/4321/index.html");
+					
 			try
-	        {
-	        	Vector<String> links = crawler.extractLinks();
-	        	String title = crawler.extractTitle();
-	        	crawler.extractPageInfo();
+			{
+				InvertedIndex Id_Url_index = new InvertedIndex("project","id_url");
+				InvertedIndex ChildLink_index = new InvertedIndex("project","childlink");
+				InvertedIndex ParentLink_index = new InvertedIndex("project","parentlink");
 
-	        	InvertedIndex Id_Url_index = new InvertedIndex("project","id_url");
-	            InvertedIndex ChildLink_index = new InvertedIndex("project","childlink");
-	            InvertedIndex ParentLink_index = new InvertedIndex("project","parentlink");
+				
+				String title = crawler.extractTitle();
+				String info = crawler.extractPageInfo();
 
-	            int current_id = count;
-	            Id_Url_index.addEntry(Integer.toString(current_id), crawler.getURL());
-	    		for(int i = 0; i < links.size(); i++){
-	    			if(true){ //TODO: detect duplicate
-		    			count++;
-		    			Id_Url_index.addEntry(Integer.toString(count), links.get(i));
-		            	ChildLink_index.addEntry(Integer.toString(current_id), Integer.toString(count));
-		            	ParentLink_index.addEntry(Integer.toString(count), Integer.toString(current_id));
-	    			}
-	    		}
+				int current_id = count;
+				Id_Url_index.addEntry(Integer.toString(current_id), crawler.getURL());
 
-	            Id_Url_index.printAll();
-	            Id_Url_index.finalize();
-	            ChildLink_index.printAll();
-	            ChildLink_index.finalize();
-	            ParentLink_index.printAll();
-	            ParentLink_index.finalize();
-	        }
-	        catch(IOException ex)
-	        {
-	            System.err.println(ex.toString());
-	        }
-	    }			
+				while (current_id <= Required_Number){
+					Id_Url_index.addEntry(Integer.toString(current_id), title);
+					Id_Url_index.addEntry(Integer.toString(current_id), info);
+
+					//Call function to extract words of each page here
+					//TODO:
+					//Vector<String> words = crawler.extractWords();
+
+					if (count < Required_Number){
+						Vector<String> links = crawler.extractLinks();
+						for (int i = 0; i < links.size(); i++){
+							if (true){ //TODO: detect duplicate
+								count++;
+								if (count >= Required_Number)
+									break;
+								Id_Url_index.addEntry(Integer.toString(count), links.get(i));
+								ChildLink_index.addEntry(Integer.toString(current_id), Integer.toString(count));
+								ParentLink_index.addEntry(Integer.toString(count), Integer.toString(current_id));
+							}
+						}
+					}
+					current_id++;
+					String next_url = Id_Url_index.getEntry(Integer.toString(current_id));
+					crawler.setURL(next_url);
+				}
+
+				Id_Url_index.printAll();
+				Id_Url_index.finalize();
+				ChildLink_index.printAll();
+				ChildLink_index.finalize();
+				ParentLink_index.printAll();
+				ParentLink_index.finalize();
+			}
+			catch(IOException ex)
+			{
+				System.err.println(ex.toString());
+			}
+		}			
 		catch (ParserException e)
-        {
-            e.printStackTrace ();
-        }
+		{
+			e.printStackTrace ();
+		}
 	}
 }
 	
