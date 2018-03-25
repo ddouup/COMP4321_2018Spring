@@ -29,6 +29,10 @@ public class InvertedIndex
         }
     }
 
+    public void commit() throws IOException
+    {
+        recman.commit();
+    }
     public void finalize() throws IOException
     {
         recman.commit();
@@ -43,7 +47,7 @@ public class InvertedIndex
         if (content == null) {
             content = _content;
         } else {
-            content += ";" + _content;
+            content += "; " + _content;
         }
         hashtable.put(_key, content);
     }

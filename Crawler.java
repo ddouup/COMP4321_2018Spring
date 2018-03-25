@@ -130,7 +130,6 @@ public class Crawler
 
 		String title = nodes.elementAt(0).toString();
 		//test only
-		System.out.println("Title of " + url + ":");
 		System.out.println(title);
 		System.out.println("");
 		return title;
@@ -155,7 +154,7 @@ public class Crawler
 				int current_id = count;
 				Id_Url_index.addEntry(Integer.toString(current_id), crawler.getURL());
 
-				while (current_id <= Required_Number){
+				while (true){
 					Id_Url_index.addEntry(Integer.toString(current_id), title);
 					Id_Url_index.addEntry(Integer.toString(current_id), info);
 
@@ -168,7 +167,7 @@ public class Crawler
 						for (int i = 0; i < links.size(); i++){
 							if (true){ //TODO: detect duplicate
 								count++;
-								if (count >= Required_Number)
+								if (count > Required_Number)
 									break;
 								Id_Url_index.addEntry(Integer.toString(count), links.get(i));
 								ChildLink_index.addEntry(Integer.toString(current_id), Integer.toString(count));
@@ -176,11 +175,24 @@ public class Crawler
 							}
 						}
 					}
+
+					System.out.println(Integer.toString(current_id) + "pages finished.");
+					Id_Url_index.printAll();
+					Id_Url_index.commit();
+					ChildLink_index.printAll();
+					ChildLink_index.commit();
+					ParentLink_index.printAll();
+					ParentLink_index.commit();
+
 					current_id++;
+					if (current_id > Required_Number)
+						break;
 					String next_url = Id_Url_index.getEntry(Integer.toString(current_id));
 					crawler.setURL(next_url);
 				}
 
+				System.out.println("Finish");
+				System.out.println("");
 				Id_Url_index.printAll();
 				Id_Url_index.finalize();
 				ChildLink_index.printAll();
