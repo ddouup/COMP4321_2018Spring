@@ -18,6 +18,11 @@ compile:
 compile:
 ## TODO:
 ```
-1. Recursively fetch the required number of pages using a breadth-first strategy
-2. Check duplicate and out-of-date page
+1. Check out-of-date page
+```
+
+## Questions:
+```
+1. Link is a file?
+2. Chinese version?
 ```

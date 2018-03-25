@@ -33,21 +33,20 @@ public class InvertedIndex
     {
         recman.commit();
     }
+
     public void finalize() throws IOException
     {
         recman.commit();
         recman.close();                
     } 
 
-    public void addEntry(String _key, String _content) throws IOException
+    public void addEntry(String _key, String _value) throws IOException
     {
-        // Add a "docX Y" entry for the key "word" into hashtable
-        // ADD YOUR CODES HERE
         String content = (String)hashtable.get(_key);
         if (content == null) {
-            content = _content;
+            content = _value;
         } else {
-            content += "; " + _content;
+            content += "; " + _value;
         }
         hashtable.put(_key, content);
     }
@@ -57,17 +56,48 @@ public class InvertedIndex
         return hashtable.get(_key).toString();
     }
 
+    public void delValue(String _key) throws IOException
+    {
+        String content = "";
+        this.addEntry(_key,content);
+    }
+
     public void delEntry(String _key) throws IOException
     {
         // Delete the id and its list from the hashtable
-        // ADD YOUR CODES HERE
         hashtable.remove(_key);
+    }
+
+    public boolean containsKey(String _key) throws IOException
+    {
+        FastIterator iter = hashtable.keys();
+        String key;
+
+        while( (key=(String)iter.next()) != null ) {
+            if (key.equalsIgnoreCase(_key)){
+                System.out.println("Bingo!!!!!!!!!");
+                return true;
+            }
+        }
+        System.out.println("Woopsssss!!!!!!!!!");
+        return false;
+    }
+
+    public boolean containsValue(String _value) throws IOException
+    {
+        FastIterator iter = hashtable.values();
+        String value;
+        while( (value=(String)iter.next()) != null ) {
+           if (value.equals(_value)){
+            return true;
+           }
+        }
+        return false;
     }
 
     public void printAll() throws IOException
     {
         // Print all the data in the hashtable
-        // ADD YOUR CODES HERE
         System.out.println("Database: "+ RecordManagerName + "\tHashtable: " + ObjectName);
         FastIterator iter = hashtable.keys();
         String key;
