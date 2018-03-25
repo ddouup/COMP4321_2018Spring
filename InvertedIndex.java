@@ -70,6 +70,6 @@ public class InvertedIndex
         while( (key=(String)iter.next()) != null ) {
             System.out.println(key + " = " + hashtable.get(key));
         }
-        System.out.println("\n");
+        System.out.println("");
     }
 }

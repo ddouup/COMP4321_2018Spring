@@ -18,7 +18,6 @@ compile:
 compile:
 ## TODO:
 ```
-1. Fetch page title, last modification date, size
-2. Recursively fetch the required number of pages using a breadth-first strategy
-3. Check duplicate and out-of-date page
+1. Recursively fetch the required number of pages using a breadth-first strategy
+2. Check duplicate and out-of-date page
 ```

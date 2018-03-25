@@ -1,16 +1,21 @@
 import java.util.Vector;
+//import java.util.List;
+//import java.util.Map;
+import java.util.Date;
 import org.htmlparser.beans.StringBean;
 import org.htmlparser.Node;
 import org.htmlparser.NodeFilter;
 import org.htmlparser.Parser;
 import org.htmlparser.filters.AndFilter;
-import org.htmlparser.filters.NodeClassFilter;
+import org.htmlparser.filters.TagNameFilter;
 import org.htmlparser.tags.LinkTag;
 import org.htmlparser.util.NodeList;
 import org.htmlparser.util.ParserException;
 import java.util.StringTokenizer;
 import org.htmlparser.beans.LinkBean;
+import org.htmlparser.beans.FilterBean;
 import java.net.URL;
+import java.net.URLConnection;
 import java.io.IOException;
 
 public class Crawler
@@ -45,6 +50,13 @@ public class Crawler
 		while (st.hasMoreTokens()) {
 		    result.add(st.nextToken());
 		}
+
+		//test only
+		System.out.println("Words in " + url + ":");
+		for(int i = 0; i < result.size(); i++)
+			System.out.print(result.get(i)+" ");
+		System.out.println("");
+
 		return result;
 	}
 
@@ -59,32 +71,79 @@ public class Crawler
 		for (URL s : urls) {
 		    result.add(s.toString());
 		}
+
+		//test only
+		System.out.println("Links in " + url + ":");
+		for(int i = 0; i < result.size(); i++)		
+			System.out.println(result.get(i));
+		System.out.println("");
+
 		return result;
 	}
 	
+	public void extractPageInfo()
+	{
+		try
+		{
+			URL obj = new URL(url);
+			URLConnection conn = obj.openConnection();
+			
+			long Content_Length = conn.getContentLengthLong();
+			System.out.println("Content_Length: " + Content_Length);
+
+			long Last_Modified = conn.getLastModified();
+			Date Last_Modified_Date = new Date(Last_Modified);
+			System.out.println("Last_Modified_Date: " + Last_Modified_Date);
+			
+			/* test only
+			Map<String, List<String>> map = conn.getHeaderFields();
+			System.out.println("Printing Response Header...\n");
+
+			for (Map.Entry<String, List<String>> entry : map.entrySet()) {
+				System.out.println(entry.getKey() + ": " + entry.getValue());
+			}*/
+			System.out.println("");
+		}
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+	    }
+	}
+
+	public String extractTitle() throws ParserException
+	{
+		
+		FilterBean bean = new FilterBean();
+		bean.setURL(url);
+
+		NodeFilter filter1 = new TagNameFilter("title");
+		NodeFilter[] filters = {filter1};
+		bean.setFilters(filters);
+		NodeList nodes = bean.getNodes();
+
+		String title = nodes.elementAt(0).toString();
+		//test only
+		System.out.println("Title of " + url + ":");
+		System.out.println(title);
+		System.out.println("");
+		return title;
+	}
+
 	public static void main (String[] args)
 	{
 		try
 		{
 			Crawler crawler = new Crawler("http://www.cs.ust.hk/~dlee/4321/");
 
-			/*
-			Vector<String> words = crawler.extractWords();		
-			
-			System.out.println("Words in "+crawler.url+":");
-			for(int i = 0; i < words.size(); i++)
-				System.out.print(words.get(i)+" ");
-			System.out.println("\n\n");
-			*/
+			//Vector<String> words = crawler.extractWords();		
 
-			Vector<String> links = crawler.extractLinks();
-			System.out.println("Links in "+crawler.url+":");
-			for(int i = 0; i < links.size(); i++)		
-				System.out.println(links.get(i));
-			System.out.println("");
 
 			try
 	        {
+	        	Vector<String> links = crawler.extractLinks();
+	        	String title = crawler.extractTitle();
+	        	crawler.extractPageInfo();
+
 	        	InvertedIndex Id_Url_index = new InvertedIndex("project","id_url");
 	            InvertedIndex ChildLink_index = new InvertedIndex("project","childlink");
 	            InvertedIndex ParentLink_index = new InvertedIndex("project","parentlink");
