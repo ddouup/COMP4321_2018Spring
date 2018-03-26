@@ -59,7 +59,7 @@ public class InvertedIndex
     public void delValue(String _key) throws IOException
     {
         String content = "";
-        this.addEntry(_key,content);
+        hashtable.put(_key, content);
     }
 
     public void delEntry(String _key) throws IOException

@@ -12,7 +12,7 @@ public class Launcher
 		count = 1;
 		try
 		{
-			Crawler crawler = new Crawler("http://www.cse.ust.hk/~dlee/4321/index.html");
+			Crawler crawler = new Crawler("http://www.cse.ust.hk/");
 					
 			try
 			{
@@ -61,6 +61,7 @@ public class Launcher
 							}
 							else{
 								count++;
+								System.out.println(count);
 								if (count > Required_Number)
 									break;
 								String current_url = crawler.getURL();

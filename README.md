@@ -2,6 +2,7 @@
 * Crawler
 * Indexer
 * Test Program
+
 ## Crawler
 compile:
 ```
@@ -13,10 +14,13 @@ run:
 ```
 java -cp lib/*:. Launcher
 ```
+
 ## Indexer
 compile:
+
 ## Test Program
 compile:
+
 ## TODO:
 ```
 1. Check out-of-date page
@@ -26,4 +30,5 @@ compile:
 ```
 1. Link is a file?
 2. Chinese version?
+3. Authentication required?
 ```
