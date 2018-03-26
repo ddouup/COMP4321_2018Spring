@@ -7,10 +7,11 @@ compile:
 ```
 javac -cp lib/jdbm-1.0.jar InvertedIndex.java
 javac -cp .:lib/* Crawler.java
+javac -cp .:lib/* Launcher.java
 ```
 run:
 ```
-java -cp lib/*:. Crawler
+java -cp lib/*:. Launcher
 ```
 ## Indexer
 compile:
