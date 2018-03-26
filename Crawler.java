@@ -41,7 +41,9 @@ public class Crawler
 	{
 		// extract words in url and return them
 		// use StringTokenizer to tokenize the result from StringBean
-		// ADD YOUR CODES HERE
+		// use stopStem to remove stop words and remove
+
+		StopStem stopStem = new StopStem("stopwords.txt");
 		Vector<String> result = new Vector<String>();
 		StringBean bean = new StringBean();
 		bean.setURL(url);
@@ -49,14 +51,18 @@ public class Crawler
 		String contents = bean.getStrings();
 		StringTokenizer st = new StringTokenizer(contents);
 		while (st.hasMoreTokens()) {
-			result.add(st.nextToken());
+			String word = st.nextToken();
+			if (!stopStem.isStopWord(word)){
+				word = stopStem.stem(word);
+				result.add(word);
+			}
 		}
 
 		//test only
-		System.out.println("Words in " + url + ":");
+		/*System.out.println("Words in " + url + ":");
 		for(int i = 0; i < result.size(); i++)
 			System.out.print(result.get(i)+" ");
-		System.out.println("");
+		System.out.println("");*/
 
 		return result;
 	}

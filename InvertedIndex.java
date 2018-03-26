@@ -75,11 +75,9 @@ public class InvertedIndex
 
         while( (key=(String)iter.next()) != null ) {
             if (key.equalsIgnoreCase(_key)){
-                System.out.println("Bingo!!!!!!!!!");
                 return true;
             }
         }
-        System.out.println("Woopsssss!!!!!!!!!");
         return false;
     }
 
