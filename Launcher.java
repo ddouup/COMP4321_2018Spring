@@ -7,6 +7,7 @@ public class Launcher
 	private static int Required_Number = 30;
 	private static int count_url;
 	private static int count_term;
+	private static InvertedIndex Constructor;
 	private	static InvertedIndex Id_Url_index;
 	private	static InvertedIndex Url_Id_index;
 	private	static InvertedIndex Id_Title_index;
@@ -18,7 +19,8 @@ public class Launcher
 	private	static InvertedIndex Id_Doc_index;
 
 	Launcher() throws IOException
-	{
+	{	
+		Constructor = new InvertedIndex("project");
 		Id_Url_index = new InvertedIndex("project","id_url");
 		Url_Id_index = new InvertedIndex("project","url_id");
 		Id_Title_index = new InvertedIndex("project","id_title");
@@ -29,7 +31,7 @@ public class Launcher
 		Term_Id_index = new InvertedIndex("project","term_id");
 		Id_Doc_index = new InvertedIndex("project","id_doc");
 	}
-
+	/*
 	public void commitAll() throws IOException
 	{
 		Id_Url_index.commit();
@@ -41,7 +43,7 @@ public class Launcher
 		ParentLink_index.commit();
 		Term_Id_index.commit();
 		Id_Doc_index.commit();
-	}
+	}*/
 
 	public static void main (String[] args)
 	{	
@@ -65,7 +67,7 @@ public class Launcher
 				String last_modified = info[1];
 				Id_LastModified_index.addEntry(Integer.toString(current_id), last_modified);
 
-				launcher.commitAll();
+				Constructor.commit();
 
 				while (true){
 					if (count_url < Required_Number){
@@ -120,7 +122,7 @@ public class Launcher
 								
 								words.clear();
 								*/
-								launcher.commitAll();
+								Constructor.commit();
 								crawler.setURL(current_url);
 							}
 						}
@@ -148,7 +150,7 @@ public class Launcher
 				ParentLink_index.printAll();
 				Term_Id_index.printAll();
 				Id_Doc_index.printAll();
-
+				/*
 				Id_Url_index.finalize();
 				Url_Id_index.finalize();
 				Id_Title_index.finalize();
@@ -157,7 +159,8 @@ public class Launcher
 				ChildLink_index.finalize();
 				ParentLink_index.finalize();
 				Term_Id_index.finalize();
-				Id_Doc_index.finalize();			
+				Id_Doc_index.finalize();*/
+				Constructor.finalization();		
 			}
 			catch(IOException ex)
 			{

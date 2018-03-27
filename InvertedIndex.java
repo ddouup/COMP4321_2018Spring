@@ -8,16 +8,21 @@ import java.io.Serializable;
 
 public class InvertedIndex
 {
-    private RecordManager recman;
+    private static RecordManager recman;
     private HTree hashtable;
     private String RecordManagerName;
     private String ObjectName;
 
+    public InvertedIndex(String recordmanager) throws IOException
+    {
+        recman = RecordManagerFactory.createRecordManager(recordmanager);
+        RecordManagerName = recordmanager;
+        System.out.println("RecordManager Created: " + RecordManagerName);
+    }
     public InvertedIndex(String recordmanager, String objectname) throws IOException
     {
-        RecordManagerName = recordmanager;
         ObjectName = objectname;
-        recman = RecordManagerFactory.createRecordManager(recordmanager);
+        
         long recid = recman.getNamedObject(objectname);
             
         if (recid != 0)
@@ -29,16 +34,16 @@ public class InvertedIndex
         }
     }
 
-    public void commit() throws IOException
+    public static void commit() throws IOException
     {
         recman.commit();
     }
-
-    public void finalize() throws IOException
+    
+    public static void finalization() throws IOException
     {
         recman.commit();
         recman.close();                
-    } 
+    }
 
     public void addEntry(String _key, String _value) throws IOException
     {
