@@ -35,11 +35,14 @@ public class YmyTest {
             String keyCl;
             String keyLm;
             String keyCi;
+            String keyDk;
             FastIterator iterTi = Launcher.Id_Title_index.hashtable.keys();
             FastIterator iterUr = Launcher.Id_Url_index.hashtable.keys();
             FastIterator iterCl = Launcher.Id_ContentLength_index.hashtable.keys();
             FastIterator iterLm = Launcher.Id_LastModified_index.hashtable.keys();
             FastIterator iterCi = Launcher.ChildLink_index.hashtable.keys();
+            FastIterator iterDk = Launcher.Docid_Key_index.hashtable.keys();
+
 
             for(int i=0;i<30;i++)
             {
@@ -47,16 +50,21 @@ public class YmyTest {
             keyUr=(String)iterUr.next();
             keyCl=(String)iterCl.next();
             keyLm=(String)iterLm.next();
+            keyDk=(String)iterDk.next();
             out.write(Launcher.Id_Title_index.hashtable.get(keyTi)+"\r\n");
             out.write(Launcher.Id_Url_index.hashtable.get(keyUr)+"\r\n");
+            
             if(Launcher.Id_LastModified_index.hashtable.get(keyLm).toString().equals("0"))
             out.write("unknown,");
             else
             out.write(Launcher.Id_LastModified_index.hashtable.get(keyLm)+",");
+            
             if(Launcher.Id_ContentLength_index.hashtable.get(keyCl).toString().equals("-1"))
             out.write("unknown\r\n");
             else
             out.write(Launcher.Id_ContentLength_index.hashtable.get(keyCl)+"\r\n");
+            
+            out.write(Launcher.Docid_Key_index.hashtable.get(keyDk)+"\r\n");
             
             while((keyCi=(String)iterCi.next()) != null)
             {

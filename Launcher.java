@@ -16,8 +16,8 @@ public class Launcher
 	public	static InvertedIndex Id_LastModified_index;
 	public	static InvertedIndex ChildLink_index;
 	public	static InvertedIndex ParentLink_index;
-	public	static InvertedIndex Term_Id_index;
-	public	static InvertedIndex Id_Doc_index;
+	public	static InvertedIndex Docid_Key_index;
+	public	static InvertedIndex Key_Docid_index;
 
 	Launcher() throws IOException
 	{	
@@ -29,8 +29,8 @@ public class Launcher
 		Id_LastModified_index = new InvertedIndex("project","id_lastmodified");
 		ChildLink_index = new InvertedIndex("project","childlink");
 		ParentLink_index = new InvertedIndex("project","parentlink");
-		Term_Id_index = new InvertedIndex("project","term_id");
-		Id_Doc_index = new InvertedIndex("project","id_doc");
+		Docid_Key_index = new InvertedIndex("project","docid_key");
+		Key_Docid_index = new InvertedIndex("project","key_docid");
 	}
 
 	public static void main (String[] args)
@@ -54,7 +54,25 @@ public class Launcher
 				Id_ContentLength_index.addEntry(Integer.toString(current_id), content_length);
 				String last_modified = info[1];
 				Id_LastModified_index.addEntry(Integer.toString(current_id), last_modified);
-
+				
+				int wordcount=0;
+				Vector<String> words = crawler.extractWords();
+				Collections.sort(words);
+				String k="";
+				if(words.size()!=0)								
+				k=words.get(wordcount);
+				else
+				Docid_Key_index.addEntry(Integer.toString(count_url), "");
+				for (int g = 0; g < words.size(); g++){
+					if(!k.equals(words.get(g)))
+					{
+					wordcount=g-wordcount;
+					String tmp=""+wordcount;
+					Docid_Key_index.addEntry(Integer.toString(count_url), k+":"+tmp);
+					wordcount=g;
+					k=words.get(g);
+					}
+				}
 				Constructor.commit();
 
 				while (true){
@@ -97,14 +115,27 @@ public class Launcher
 
 								//Call function to extract words of each page here
 								//This part should be called once before while(true)
-								Vector<String> words = crawler.extractWords();
+								wordcount=0;
+								words = crawler.extractWords();
 								Collections.sort(words);
+								k="";
+								if(words.size()!=0)								
+								k=words.get(wordcount);
+								else
+								Docid_Key_index.addEntry(Integer.toString(count_url), "");
 								for (int j = 0; j < words.size(); j++){
-									if (!Term_Id_index.containsKey(words.get(j))){
-										Term_Id_index.addEntry(words.get(j), Integer.toString(count_term));
+									if(!k.equals(words.get(j)))
+									{
+									wordcount=j-wordcount;
+									String tmp=""+wordcount;
+									Docid_Key_index.addEntry(Integer.toString(count_url), k+":"+tmp);
+									wordcount=j;
+									k=words.get(j);
+									}
+									/*if (!Term_Id_index.containsKey(words.get(j))){//Can be optimized
+										Term_Id_index.addEntry(words.get(j), Integer.toString(count_term)); 
 									}
 									count_term++;
-									//TODO:
 									//add and update tf each time
 									String docs = Id_Doc_index.getEntry(Integer.toString(count_term));
 									String update_doc = "";
@@ -122,17 +153,13 @@ public class Launcher
 											update_doc = docs + "; " + new_doc_tf;
 										}
 									}
-									Id_Doc_index.updateEntry(Integer.toString(count_term), update_doc);
+									Id_Doc_index.updateEntry(Integer.toString(count_term), update_doc);*/
 								}
-
-								//TODO:
-								//Build a UrlId_TermId hashtable
-								//
-								
-								words.clear();
-								
-								Constructor.commit();
+                                
+                         		Constructor.commit();
+								//Docid_Key_index.printAll();
 								crawler.setURL(current_url);
+								words.clear();
 							}
 						}
 					}
@@ -157,7 +184,8 @@ public class Launcher
 				Id_LastModified_index.printAll();
 				ChildLink_index.printAll();
 				ParentLink_index.printAll();
-				Term_Id_index.printAll();
+				Docid_Key_index.printAll();
+				//Term_Id_index.printAll();
 				//Id_Doc_index.printAll();
 				/*
 				Id_Url_index.finalize();
