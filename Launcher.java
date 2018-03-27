@@ -31,19 +31,6 @@ public class Launcher
 		Term_Id_index = new InvertedIndex("project","term_id");
 		Id_Doc_index = new InvertedIndex("project","id_doc");
 	}
-	/*
-	public void commitAll() throws IOException
-	{
-		Id_Url_index.commit();
-		Url_Id_index.commit();
-		Id_Title_index.commit();
-		Id_ContentLength_index.commit();
-		Id_LastModified_index.commit();
-		ChildLink_index.commit();
-		ParentLink_index.commit();
-		Term_Id_index.commit();
-		Id_Doc_index.commit();
-	}*/
 
 	public static void main (String[] args)
 	{	
@@ -108,7 +95,7 @@ public class Launcher
 								Id_LastModified_index.addEntry(Integer.toString(count_url), last_modified);
 
 								//Call function to extract words of each page here
-								/*
+								
 								Vector<String> words = crawler.extractWords();
 								for (int j = 0; j < words.size(); j++){
 									if (!Term_Id_index.containsKey(words.get(j))){
@@ -121,7 +108,7 @@ public class Launcher
 								}
 								
 								words.clear();
-								*/
+								
 								Constructor.commit();
 								crawler.setURL(current_url);
 							}
