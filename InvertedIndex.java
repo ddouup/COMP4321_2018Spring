@@ -56,9 +56,15 @@ public class InvertedIndex
         hashtable.put(_key, content);
     }
 
+    public void updateEntry(String _key, String _value) throws IOException
+    {
+        String content = _value;
+        hashtable.put(_key, content);
+    }
+
     public String getEntry(String _key) throws IOException
     {
-        return hashtable.get(_key).toString();
+        return hashtable.get(_key);
     }
 
     public void delValue(String _key) throws IOException

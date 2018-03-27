@@ -95,7 +95,7 @@ public class Launcher
 								Id_LastModified_index.addEntry(Integer.toString(count_url), last_modified);
 
 								//Call function to extract words of each page here
-								
+								//This part should be called once before while(true)
 								Vector<String> words = crawler.extractWords();
 								for (int j = 0; j < words.size(); j++){
 									if (!Term_Id_index.containsKey(words.get(j))){
@@ -104,8 +104,28 @@ public class Launcher
 									count_term++;
 									//TODO:
 									//add and update tf each time
-									//Id_Doc_index.addEntry(Integer.toString(count_term), Integer.toString(current_id));
+									String docs = Id_Doc_index.getEntry(Integer.toString(count_term));
+									String update_doc = "";
+									if (docs != null){
+										String[] doc_tfs = docs.split(";"); 
+										String[] last_doc_tf = doc_tfs[doc_tfs.size()-1].split(",");
+										if (last_doc_tf[0].equals(Integer.toString(count_url))){
+											doc_tfs[doc_tfs.size()-1] = last_doc_tf[0] + "," + Interger.toString(Integer.parseInt(last_doc_tf[1]) + 1);
+											for (int k = 0; k = doc_tfs.size(); k++){
+												update_doc += doc_tfs[k];
+											}
+										}
+										else{
+											String new_doc_tf = Integer.toString(count_url) + ",1";
+											update_doc = doc + "; " + new_doc_tf;
+										}
+									}
+									Id_Doc_index.updateEntry(Integer.toString(count_term), update_doc);
 								}
+
+								//TODO:
+								//Build a UrlId_TermId hashtable
+								//
 								
 								words.clear();
 								
