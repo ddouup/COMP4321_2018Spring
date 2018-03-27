@@ -1,3 +1,4 @@
+import java.util.Collections;
 import java.util.Vector;
 import org.htmlparser.util.ParserException;
 import java.io.IOException;
@@ -75,9 +76,9 @@ public class Launcher
 							}
 							else{
 								count_url++;
-								System.out.println(count_url);
 								if (count_url > Required_Number)
 									break;
+								System.out.println(count_url);
 								String current_url = crawler.getURL();
 								crawler.setURL(link);
 								Id_Url_index.addEntry(Integer.toString(count_url), link);
@@ -97,6 +98,7 @@ public class Launcher
 								//Call function to extract words of each page here
 								//This part should be called once before while(true)
 								Vector<String> words = crawler.extractWords();
+								Collections.sort(words);
 								for (int j = 0; j < words.size(); j++){
 									if (!Term_Id_index.containsKey(words.get(j))){
 										Term_Id_index.addEntry(words.get(j), Integer.toString(count_term));

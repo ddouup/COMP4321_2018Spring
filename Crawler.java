@@ -54,6 +54,9 @@ public class Crawler
 			String word = st.nextToken();
 			if (!stopStem.isStopWord(word)){
 				word = stopStem.stem(word);
+				boolean isWord=word.matches("^[A-Za-z0-9]+");
+				//if(!word.equals(""))
+				if(isWord)
 				result.add(word);
 			}
 		}
