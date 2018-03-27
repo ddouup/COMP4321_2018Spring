@@ -9,7 +9,7 @@ import java.io.Serializable;
 public class InvertedIndex
 {
     private static RecordManager recman;
-    private HTree hashtable;
+    public HTree hashtable;
     private String RecordManagerName;
     private String ObjectName;
 
@@ -115,4 +115,5 @@ public class InvertedIndex
         }
         System.out.println("");
     }
+
 }

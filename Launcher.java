@@ -8,15 +8,15 @@ public class Launcher
 	private static int count_url;
 	private static int count_term;
 	private static InvertedIndex Constructor;
-	private	static InvertedIndex Id_Url_index;
-	private	static InvertedIndex Url_Id_index;
-	private	static InvertedIndex Id_Title_index;
-	private	static InvertedIndex Id_ContentLength_index;
-	private	static InvertedIndex Id_LastModified_index;
-	private	static InvertedIndex ChildLink_index;
-	private	static InvertedIndex ParentLink_index;
-	private	static InvertedIndex Term_Id_index;
-	private	static InvertedIndex Id_Doc_index;
+	public	static InvertedIndex Id_Url_index;
+	public	static InvertedIndex Url_Id_index;
+	public	static InvertedIndex Id_Title_index;
+	public	static InvertedIndex Id_ContentLength_index;
+	public	static InvertedIndex Id_LastModified_index;
+	public	static InvertedIndex ChildLink_index;
+	public	static InvertedIndex ParentLink_index;
+	public	static InvertedIndex Term_Id_index;
+	public	static InvertedIndex Id_Doc_index;
 
 	Launcher() throws IOException
 	{	
