@@ -157,7 +157,6 @@ public class Launcher
 								}
                                 
                          		Constructor.commit();
-								//Docid_Key_index.printAll();
 								crawler.setURL(current_url);
 								words.clear();
 							}
@@ -185,8 +184,7 @@ public class Launcher
 				ChildLink_index.printAll();
 				ParentLink_index.printAll();
 				Docid_Key_index.printAll();
-				//Term_Id_index.printAll();
-				//Id_Doc_index.printAll();
+				//Key_Docid_index.printAll();
 				/*
 				Id_Url_index.finalize();
 				Url_Id_index.finalize();

@@ -64,11 +64,19 @@ public class YmyTest {
             else
             out.write(Launcher.Id_ContentLength_index.hashtable.get(keyCl)+"\r\n");
             
-            out.write(Launcher.Docid_Key_index.hashtable.get(keyDk)+"\r\n");
+            //out.write(Launcher.Docid_Key_index.hashtable.get(keyDk)+"\r\n");
+            String[] tokens = ((String)Launcher.Docid_Key_index.hashtable.get(keyDk)).split(";");
+            for(String token:tokens)
+            {
+            	String[] KeyTf=token.split(":"); 
+            	for(int d=0;d<KeyTf.length-1;d++)
+                out.write(KeyTf[d]+","+KeyTf[d+=1]+";");
+            }
+            out.write("\r\n");
             
             while((keyCi=(String)iterCi.next()) != null)
             {
-            String[] tokens = ((String) Launcher.ChildLink_index.hashtable.get(keyCi)).split(";");
+            tokens = ((String) Launcher.ChildLink_index.hashtable.get(keyCi)).split(";");
             for(String token:tokens)
             {
             	token=token.replaceAll(" ", ""); 
@@ -79,8 +87,6 @@ public class YmyTest {
             printdash(out);
             }
 
-
-            //out.write("Testing\r\n");  
             out.flush();  
             out.close();  
         } catch (Exception e) {  
