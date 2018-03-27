@@ -55,17 +55,10 @@ public class Crawler
 			if (!stopStem.isStopWord(word)){
 				word = stopStem.stem(word);
 				boolean isWord=word.matches("^[A-Za-z0-9]+");
-				//if(!word.equals(""))
 				if(isWord)
 				result.add(word);
 			}
 		}
-
-		//test only
-		/*System.out.println("Words in " + url + ":");
-		for(int i = 0; i < result.size(); i++)
-			System.out.print(result.get(i)+" ");
-		System.out.println("");*/
 
 		return result;
 	}
@@ -145,4 +138,23 @@ public class Crawler
 		System.out.println("");
 		return title;
 	}
+	
+	public Vector<String> extractTitleKey() throws ParserException
+	{
+		String title = extractTitle();
+		StopStem stopStem = new StopStem("stopwords.txt");
+		Vector<String> result = new Vector<String>();
+		StringTokenizer st = new StringTokenizer(title);
+		while (st.hasMoreTokens()) {
+			String word = st.nextToken();
+			if (!stopStem.isStopWord(word)){
+				word = stopStem.stem(word);
+				boolean isWord=word.matches("^[A-Za-z0-9]+");
+				if(isWord)
+				result.add(word);
+			}
+		}
+		return result;
+	}
+	
 }
