@@ -1,1 +1,149 @@
-Testing
+TITLE: Department of Computer Science and Engineering, HKUST
+http://www.cse.ust.hk/
+ 0,-1
+http://www.cse.ust.hk/?lang=hk
+http://www.cse.ust.hk/?lang=cn
+http://www.ust.hk/
+http://www.seng.ust.hk/
+http://www.cse.ust.hk/admin/recruitment/head/
+http://www.cse.ust.hk/admin/sitemap/?map=About
+http://www.cse.ust.hk/admin/welcome/
+http://www.cse.ust.hk/admin/about/
+http://www.cse.ust.hk/admin/factsheet/
+http://www.cse.ust.hk/News/?type=news|achievement
+http://www.cse.ust.hk/News/?type=event
+http://www.cse.ust.hk/admin/QA/
+http://www.cse.ust.hk/admin/contact/
+http://www.ust.hk/about-hkust/about-the-campus/map-directions-2015/
+http://www.cse.ust.hk/admin/sitemap/?map=People
+http://www.cse.ust.hk/admin/people/faculty/
+http://www.cse.ust.hk/admin/people/staff/
+http://www.cse.ust.hk/ct/
+http://www.cse.ust.hk/admin/people/pg/
+http://www.cse.ust.hk/alumni/
+http://www.cse.ust.hk/admin/recruitment/
+http://www.cse.ust.hk/admin/people/eic/
+http://www.cse.ust.hk/admin/sitemap/?map=Undergraduate
+http://www.cse.ust.hk/ug/
+http://www.cse.ust.hk/ug/hkust_only/
+http://www.cse.ust.hk/admin/sitemap/?map=Postgraduate
+http://www.cse.ust.hk/pg/
+http://www.cse.ust.hk/pg/hkust_only/
+http://www.cse.ust.hk/pg/admissions/recruiting/
+-------------------------------------------------------------------------------------------
+TITLE: Department of Computer Science and Engineering, HKUST
+http://www.cse.ust.hk/?lang=hk
+ 0,-1
+-------------------------------------------------------------------------------------------
+TITLE: Department of Computer Science and Engineering, HKUST
+http://www.cse.ust.hk/?lang=cn
+ 0,-1
+-------------------------------------------------------------------------------------------
+TITLE: HKUST - Hong Kong University of Science and Technology
+http://www.ust.hk/
+ 0,-1
+-------------------------------------------------------------------------------------------
+
+http://www.seng.ust.hk/
+ 0,208
+-------------------------------------------------------------------------------------------
+TITLE: Head of the Department of Computer Science and Engineering
+http://www.cse.ust.hk/admin/recruitment/head/
+ 0,-1
+-------------------------------------------------------------------------------------------
+TITLE: About
+http://www.cse.ust.hk/admin/sitemap/?map=About
+ 0,-1
+-------------------------------------------------------------------------------------------
+TITLE: Welcome from Acting Head of Department
+http://www.cse.ust.hk/admin/welcome/
+ 0,-1
+-------------------------------------------------------------------------------------------
+TITLE: About CSE
+http://www.cse.ust.hk/admin/about/
+ 0,-1
+-------------------------------------------------------------------------------------------
+TITLE: Fact Sheet
+http://www.cse.ust.hk/admin/factsheet/
+ 0,-1
+-------------------------------------------------------------------------------------------
+TITLE: News &amp; Achievements
+http://www.cse.ust.hk/News/?type=news|achievement
+ 0,-1
+-------------------------------------------------------------------------------------------
+TITLE: Events
+http://www.cse.ust.hk/News/?type=event
+ 0,-1
+-------------------------------------------------------------------------------------------
+TITLE: Quality Assurance
+http://www.cse.ust.hk/admin/QA/
+ 0,-1
+-------------------------------------------------------------------------------------------
+TITLE: Contact Us
+http://www.cse.ust.hk/admin/contact/
+ 0,-1
+-------------------------------------------------------------------------------------------
+TITLE: Map and Directions - HKUST
+http://www.ust.hk/about-hkust/about-the-campus/map-directions-2015/
+ 0,-1
+-------------------------------------------------------------------------------------------
+TITLE: People
+http://www.cse.ust.hk/admin/sitemap/?map=People
+ 0,-1
+-------------------------------------------------------------------------------------------
+TITLE: Faculty
+http://www.cse.ust.hk/admin/people/faculty/
+ 0,-1
+-------------------------------------------------------------------------------------------
+TITLE: Staff
+http://www.cse.ust.hk/admin/people/staff/
+ 0,-1
+-------------------------------------------------------------------------------------------
+TITLE: HKUST CSE CT Website
+http://www.cse.ust.hk/ct/
+ 0,-1
+-------------------------------------------------------------------------------------------
+TITLE: Postgraduate Students
+http://www.cse.ust.hk/admin/people/pg/
+ 0,-1
+-------------------------------------------------------------------------------------------
+TITLE: HKUST CSE Alumni
+http://www.cse.ust.hk/alumni/
+ 1520361081000,20582
+-------------------------------------------------------------------------------------------
+TITLE: Job Openings
+http://www.cse.ust.hk/admin/recruitment/
+ 0,-1
+-------------------------------------------------------------------------------------------
+TITLE: Editor in Chiefs Appointments
+http://www.cse.ust.hk/admin/people/eic/
+ 0,-1
+-------------------------------------------------------------------------------------------
+TITLE: Undergraduate
+http://www.cse.ust.hk/admin/sitemap/?map=Undergraduate
+ 0,-1
+-------------------------------------------------------------------------------------------
+TITLE: Undergraduate Programs
+http://www.cse.ust.hk/ug/
+ 0,-1
+-------------------------------------------------------------------------------------------
+TITLE: Undergraduate Intranet
+http://www.cse.ust.hk/ug/hkust_only/
+ 0,221
+-------------------------------------------------------------------------------------------
+TITLE: Postgraduate
+http://www.cse.ust.hk/admin/sitemap/?map=Postgraduate
+ 0,-1
+-------------------------------------------------------------------------------------------
+TITLE: Postgraduate Programs
+http://www.cse.ust.hk/pg/
+ 0,-1
+-------------------------------------------------------------------------------------------
+TITLE: Postgraduate Intranet
+http://www.cse.ust.hk/pg/hkust_only/
+ 0,221
+-------------------------------------------------------------------------------------------
+TITLE: Postgraduate Student Early Recruiting
+http://www.cse.ust.hk/pg/admissions/recruiting/
+ 0,-1
+-------------------------------------------------------------------------------------------
