@@ -108,16 +108,16 @@ public class Launcher
 									String update_doc = "";
 									if (docs != null){
 										String[] doc_tfs = docs.split(";"); 
-										String[] last_doc_tf = doc_tfs[doc_tfs.size()-1].split(",");
+										String[] last_doc_tf = doc_tfs[doc_tfs.length-1].split(",");
 										if (last_doc_tf[0].equals(Integer.toString(count_url))){
-											doc_tfs[doc_tfs.size()-1] = last_doc_tf[0] + "," + Interger.toString(Integer.parseInt(last_doc_tf[1]) + 1);
-											for (int k = 0; k = doc_tfs.size(); k++){
-												update_doc += doc_tfs[k];
+											doc_tfs[doc_tfs.length-1] = last_doc_tf[0] + "," + Integer.toString(Integer.parseInt(last_doc_tf[1]) + 1);
+											for (int m = 0; m <doc_tfs.length; m++){
+												update_doc += doc_tfs[m];
 											}
 										}
 										else{
 											String new_doc_tf = Integer.toString(count_url) + ",1";
-											update_doc = doc + "; " + new_doc_tf;
+											update_doc = docs + "; " + new_doc_tf;
 										}
 									}
 									Id_Doc_index.updateEntry(Integer.toString(count_term), update_doc);
@@ -156,7 +156,7 @@ public class Launcher
 				ChildLink_index.printAll();
 				ParentLink_index.printAll();
 				Term_Id_index.printAll();
-				Id_Doc_index.printAll();
+				//Id_Doc_index.printAll();
 				/*
 				Id_Url_index.finalize();
 				Url_Id_index.finalize();

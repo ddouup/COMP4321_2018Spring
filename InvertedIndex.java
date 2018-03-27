@@ -64,7 +64,7 @@ public class InvertedIndex
 
     public String getEntry(String _key) throws IOException
     {
-        return hashtable.get(_key);
+        return (String) hashtable.get(_key);
     }
 
     public void delValue(String _key) throws IOException

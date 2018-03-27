@@ -49,9 +49,7 @@ public class YmyTest {
             keyLm=(String)iterLm.next();
             out.write(Launcher.Id_Title_index.hashtable.get(keyTi)+"\r\n");
             out.write(Launcher.Id_Url_index.hashtable.get(keyUr)+"\r\n");
-            //debug=Launcher.Id_LastModified_index.hashtable.get(keyCl).toString();
-            //debug=debug.replaceAll(" ", "");
-            if(Launcher.Id_LastModified_index.hashtable.get(keyLm).toString().equals(" 0"))
+            if(Launcher.Id_LastModified_index.hashtable.get(keyLm).toString().equals("0"))
             out.write("unknown,");
             else
             out.write(Launcher.Id_LastModified_index.hashtable.get(keyLm)+",");

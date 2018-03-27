@@ -112,7 +112,7 @@ public class Crawler
 			System.out.println("Last_Modified_Date: " + Last_Modified_Date);
 			
 			System.out.println("");
-			String result = Long.toString(Content_Length) + "; " + Long.toString(Last_Modified);
+			String result = Long.toString(Content_Length) + ";" + Long.toString(Last_Modified);
 
 	    	return result;
 		}
