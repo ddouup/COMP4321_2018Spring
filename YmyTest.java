@@ -49,11 +49,13 @@ public class YmyTest {
             keyLm=(String)iterLm.next();
             out.write(Launcher.Id_Title_index.hashtable.get(keyTi)+"\r\n");
             out.write(Launcher.Id_Url_index.hashtable.get(keyUr)+"\r\n");
-            if((String)Launcher.Id_LastModified_index.hashtable.get(keyLm)==" 0")
+            //debug=Launcher.Id_LastModified_index.hashtable.get(keyCl).toString();
+            //debug=debug.replaceAll(" ", "");
+            if(Launcher.Id_LastModified_index.hashtable.get(keyLm).toString().equals(" 0"))
             out.write("unknown,");
             else
             out.write(Launcher.Id_LastModified_index.hashtable.get(keyLm)+",");
-            if((String)Launcher.Id_ContentLength_index.hashtable.get(keyCl)==" -1")
+            if(Launcher.Id_ContentLength_index.hashtable.get(keyCl).toString().equals("-1"))
             out.write("unknown\r\n");
             else
             out.write(Launcher.Id_ContentLength_index.hashtable.get(keyCl)+"\r\n");
@@ -69,7 +71,6 @@ public class YmyTest {
             }
             
             printdash(out);
-            //out.write(Launcher, off, len);
             }
 
 
