@@ -244,7 +244,11 @@ public class Launcher
 						for (int i = 1; i < links.size(); i++){
 							String link = links.get(i);
 							System.out.println("Processing link:"+link);
-							if (Url_Id_index.containsKey(link)){
+							if (Url_Id_index.containsKey(link))
+							{
+								count_url++;
+								if (count_url > Required_Number)
+									break;
 								String id_temp = Url_Id_index.getEntry(link);
 								String old_lastmodified = Id_LastModified_index.getEntry(id_temp);
 
@@ -256,7 +260,6 @@ public class Launcher
 									launcher.updateTitleterm(crawler);
 									launcher.updateContentterm(crawler);
 								}	
-								count_url++;
 							}
 							else{
 								count_url++;

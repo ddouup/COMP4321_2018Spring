@@ -16,6 +16,7 @@ import org.htmlparser.beans.LinkBean;
 import org.htmlparser.beans.FilterBean;
 import java.net.URL;
 import java.net.URLConnection;
+import java.text.SimpleDateFormat;
 import java.io.IOException;
 
 public class Crawler
@@ -106,9 +107,11 @@ public class Crawler
 			long Last_Modified = conn.getLastModified();
 			Date Last_Modified_Date = new Date(Last_Modified);
 			System.out.println("Last_Modified_Date: " + Last_Modified_Date);
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			String startTime = sdf.format(Last_Modified_Date);
 			
 			System.out.println("");
-			String result = Long.toString(Content_Length) + ";" + Long.toString(Last_Modified);
+			String result = Long.toString(Content_Length) + ";" + startTime;
 
 	    	return result;
 		}
