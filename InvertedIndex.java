@@ -115,5 +115,10 @@ public class InvertedIndex
         }
         System.out.println("");
     }
+    
+    public void updateWords() throws IOException
+    {
+    	
+    }
 
 }

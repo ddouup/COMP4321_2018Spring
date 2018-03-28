@@ -37,6 +37,85 @@ public class Launcher
 		TitleId_Key_index =new InvertedIndex("project","title_key");
 		Key_TitleId_index =new InvertedIndex("project","key_titleid");
 	}
+	
+	public void updateData(Crawler crawler, int current_id) throws IOException
+	{
+		Id_Url_index.addEntry(Integer.toString(current_id), crawler.getURL());
+		Url_Id_index.addEntry(crawler.getURL(), Integer.toString(current_id));
+		String title="";
+		try {
+			title = crawler.extractTitle();
+		} catch (ParserException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Id_Title_index.addEntry(Integer.toString(current_id), title);
+		String[] info = crawler.extractPageInfo().split(";");
+		String content_length = info[0];
+		Id_ContentLength_index.addEntry(Integer.toString(current_id), content_length);
+		String last_modified = info[1];
+		Id_LastModified_index.addEntry(Integer.toString(current_id), last_modified);
+	}
+	
+	public void updateTitleterm(Crawler crawler) throws IOException
+	{
+		int wordcount=0;
+		Vector<String> titlewords=null;
+		try {
+			titlewords = crawler.extractTitleKey();
+		} catch (ParserException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Collections.sort(titlewords);
+		String k="";
+		if(titlewords.size()!=0)								
+		k=titlewords.get(wordcount);
+		else
+		TitleId_Key_index.addEntry(Integer.toString(count_url),"");
+		for (int g = 0; g < titlewords.size(); g++){
+			if(!k.equals(titlewords.get(g)))
+			{
+			wordcount=g-wordcount;
+			String tmp=""+wordcount;
+			TitleId_Key_index.addEntry(Integer.toString(count_url),k+":"+tmp);
+			Key_TitleId_index.addEntry(k,Integer.toString(count_url));
+			wordcount=g;
+			k=titlewords.get(g);
+			}
+		}
+		titlewords.clear();
+	}
+	
+	public void updateContentterm(Crawler crawler) throws IOException
+	{
+		int wordcount=0;
+		Vector<String> words=null;
+		try {
+			words = crawler.extractWords();
+		} catch (ParserException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Collections.sort(words);
+		String k="";
+		if(words.size()!=0)								
+		k=words.get(wordcount);
+		else
+		Docid_Key_index.addEntry(Integer.toString(count_url), "");
+		for (int g = 0; g < words.size(); g++){
+			if(!k.equals(words.get(g)))
+			{
+			wordcount=g-wordcount;
+			String tmp=""+wordcount;
+			Docid_Key_index.addEntry(Integer.toString(count_url), k+":"+tmp);
+			Key_Docid_index.addEntry(k,Integer.toString(count_url));
+			wordcount=g;
+			k=words.get(g);
+			}
+		}
+		words.clear();
+	}
 
 	public static void main (String[] args)
 	{	
@@ -50,57 +129,13 @@ public class Launcher
 			{
 				Launcher launcher = new Launcher();
 				int current_id = count_url;
-				Id_Url_index.addEntry(Integer.toString(current_id), crawler.getURL());
-				Url_Id_index.addEntry(crawler.getURL(), Integer.toString(current_id));
-				String title = crawler.extractTitle();
-				Id_Title_index.addEntry(Integer.toString(current_id), title);
-				String[] info = crawler.extractPageInfo().split(";");
-				String content_length = info[0];
-				Id_ContentLength_index.addEntry(Integer.toString(current_id), content_length);
-				String last_modified = info[1];
-				Id_LastModified_index.addEntry(Integer.toString(current_id), last_modified);
+				launcher.updateData(crawler,current_id);
 				
 				//Title Key
-				int wordcount=0;
-				Vector<String> titlewords = crawler.extractTitleKey();
-				Collections.sort(titlewords);
-				String k="";
-				if(titlewords.size()!=0)								
-				k=titlewords.get(wordcount);
-				else
-				TitleId_Key_index.addEntry(Integer.toString(count_url),"");
-				for (int g = 0; g < titlewords.size(); g++){
-					if(!k.equals(titlewords.get(g)))
-					{
-					wordcount=g-wordcount;
-					String tmp=""+wordcount;
-					TitleId_Key_index.addEntry(Integer.toString(count_url),k+":"+tmp);
-					Key_TitleId_index.addEntry(k,Integer.toString(count_url));
-					wordcount=g;
-					k=titlewords.get(g);
-					}
-				}
+				launcher.updateTitleterm(crawler);
 				
 				//Content Key
-			    wordcount=0;
-				Vector<String> words = crawler.extractWords();
-				Collections.sort(words);
-				k="";
-				if(words.size()!=0)								
-				k=words.get(wordcount);
-				else
-				Docid_Key_index.addEntry(Integer.toString(count_url), "");
-				for (int g = 0; g < words.size(); g++){
-					if(!k.equals(words.get(g)))
-					{
-					wordcount=g-wordcount;
-					String tmp=""+wordcount;
-					Docid_Key_index.addEntry(Integer.toString(count_url), k+":"+tmp);
-					Key_Docid_index.addEntry(k,Integer.toString(count_url));
-					wordcount=g;
-					k=words.get(g);
-					}
-				}
+				launcher.updateContentterm(crawler);
 				Constructor.commit();
 
 				while (true){
@@ -117,8 +152,8 @@ public class Launcher
 									System.out.println("Need Update");
 								}
 								else
-									continue;*/
-								continue;
+								count_url++;
+								continue;*/
 							}
 							else{
 								count_url++;
@@ -127,67 +162,19 @@ public class Launcher
 								System.out.println(count_url);
 								String current_url = crawler.getURL();
 								crawler.setURL(link);
-								Id_Url_index.addEntry(Integer.toString(count_url), link);
-								Url_Id_index.addEntry(link, Integer.toString(count_url));
 								ChildLink_index.addEntry(Integer.toString(current_id), Integer.toString(count_url));
 								ParentLink_index.addEntry(Integer.toString(count_url), Integer.toString(current_id));
-
-								title = crawler.extractTitle();
-								Id_Title_index.addEntry(Integer.toString(count_url), title);
-
-								info = crawler.extractPageInfo().split(";");
-								content_length = info[0];
-								Id_ContentLength_index.addEntry(Integer.toString(count_url), content_length);
-								last_modified = info[1];
-								Id_LastModified_index.addEntry(Integer.toString(count_url), last_modified);
+								launcher.updateData(crawler, count_url);
 
 								//Call function to extract words of each page here
 								//This part should be called once before while(true)
 								//Content Key
-								wordcount=0;
-								words = crawler.extractWords();
-								Collections.sort(words);
-								k="";
-								if(words.size()!=0)								
-								k=words.get(wordcount);
-								else
-								Docid_Key_index.addEntry(Integer.toString(count_url), "");
-								for (int j = 0; j < words.size(); j++){
-									if(!k.equals(words.get(j)))
-									{
-									wordcount=j-wordcount;
-									String tmp=""+wordcount;
-									Docid_Key_index.addEntry(Integer.toString(count_url), k+":"+tmp);
-									Key_Docid_index.addEntry(words.get(j),Integer.toString(count_url));
-									wordcount=j;
-									k=words.get(j);
-									}
-								}
+								launcher.updateContentterm(crawler);
 								
 								//Title Key
-							    wordcount=0;
-							    titlewords = crawler.extractTitleKey();
-								Collections.sort(titlewords);
-							    k="";
-								if(titlewords.size()!=0)								
-								k=titlewords.get(wordcount);
-								else
-								TitleId_Key_index.addEntry(Integer.toString(count_url),"");
-								for (int g = 0; g < titlewords.size(); g++){
-									if(!k.equals(titlewords.get(g)))
-									{
-									wordcount=g-wordcount;
-									String tmp=""+wordcount;
-									TitleId_Key_index.addEntry(Integer.toString(count_url),k+":"+tmp);
-									Key_TitleId_index.addEntry(k,Integer.toString(count_url));
-									wordcount=g;
-									k=titlewords.get(g);
-									}
-								}
-                                
+                                launcher.updateTitleterm(crawler);
                          		Constructor.commit();
 								crawler.setURL(current_url);
-								words.clear();
 							}
 						}
 					}
@@ -205,7 +192,7 @@ public class Launcher
 				System.out.println("Finish");
 				System.out.println("");
 
-			/*	Id_Url_index.printAll();
+				Id_Url_index.printAll();
 				Url_Id_index.printAll();
 				Id_Title_index.printAll();
 				Id_ContentLength_index.printAll();
@@ -213,7 +200,7 @@ public class Launcher
 				ChildLink_index.printAll();
 				ParentLink_index.printAll();
 				Docid_Key_index.printAll();
-				Key_Docid_index.printAll();*/
+				Key_Docid_index.printAll();
 				TitleId_Key_index.printAll();
 				Key_TitleId_index.printAll();
 				
