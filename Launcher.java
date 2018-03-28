@@ -38,7 +38,12 @@ public class Launcher
 		Key_TitleId_index =new InvertedIndex("project","key_titleid");
 	}
 	
-	public void updateData(Crawler crawler, int current_id) throws IOException
+	public int getRequiredNumber() throws IOException
+	{
+		return Required_Number;
+	}
+	
+	public void addData(Crawler crawler, int current_id) throws IOException
 	{
 		Id_Url_index.addEntry(Integer.toString(current_id), crawler.getURL());
 		Url_Id_index.addEntry(crawler.getURL(), Integer.toString(current_id));
@@ -57,7 +62,7 @@ public class Launcher
 		Id_LastModified_index.addEntry(Integer.toString(current_id), last_modified);
 	}
 	
-	public void updateTitleterm(Crawler crawler) throws IOException
+	public void addTitleterm(Crawler crawler) throws IOException
 	{
 		int wordcount=0;
 		Vector<String> titlewords=null;
@@ -87,7 +92,7 @@ public class Launcher
 		titlewords.clear();
 	}
 	
-	public void updateContentterm(Crawler crawler) throws IOException
+	public void addContentterm(Crawler crawler) throws IOException
 	{
 		int wordcount=0;
 		Vector<String> words=null;
@@ -116,6 +121,88 @@ public class Launcher
 		}
 		words.clear();
 	}
+	
+	public void updateData(Crawler crawler, int current_id) throws IOException
+	{
+		Id_Url_index.updateEntry(Integer.toString(current_id), crawler.getURL());
+		Url_Id_index.updateEntry(crawler.getURL(), Integer.toString(current_id));
+		String title="";
+		try {
+			title = crawler.extractTitle();
+		} catch (ParserException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Id_Title_index.updateEntry(Integer.toString(current_id), title);
+		String[] info = crawler.extractPageInfo().split(";");
+		String content_length = info[0];
+		Id_ContentLength_index.updateEntry(Integer.toString(current_id), content_length);
+		String last_modified = info[1];
+		Id_LastModified_index.updateEntry(Integer.toString(current_id), last_modified);
+	}
+	
+	public void updateTitleterm(Crawler crawler) throws IOException
+	{
+		TitleId_Key_index.delValue(Integer.toString(count_url));
+		Key_TitleId_index.updateKey(Integer.toString(count_url));
+		int wordcount=0;
+		Vector<String> titlewords=null;
+		try {
+			titlewords = crawler.extractTitleKey();
+		} catch (ParserException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Collections.sort(titlewords);
+		String k="";
+		if(titlewords.size()!=0)								
+		k=titlewords.get(wordcount);
+		else
+		TitleId_Key_index.updateEntry(Integer.toString(count_url),"");
+		for (int g = 0; g < titlewords.size(); g++){
+			if(!k.equals(titlewords.get(g)))
+			{
+			wordcount=g-wordcount;
+			String tmp=""+wordcount;
+			TitleId_Key_index.updateEntry(Integer.toString(count_url),k+":"+tmp);
+			Key_TitleId_index.updateEntry(k,Integer.toString(count_url));
+			wordcount=g;
+			k=titlewords.get(g);
+			}
+		}
+		titlewords.clear();
+	}
+	
+	public void updateContentterm(Crawler crawler) throws IOException
+	{
+		Docid_Key_index.delValue(Integer.toString(count_url));
+		Key_Docid_index.updateKey(Integer.toString(count_url));
+		int wordcount=0;
+		Vector<String> words=null;
+		try {
+			words = crawler.extractWords();
+		} catch (ParserException e) {
+			e.printStackTrace();
+		}
+		Collections.sort(words);
+		String k="";
+		if(words.size()!=0)								
+		k=words.get(wordcount);
+		else
+		Docid_Key_index.updateEntry(Integer.toString(count_url), "");
+		for (int g = 0; g < words.size(); g++){
+			if(!k.equals(words.get(g)))
+			{
+			wordcount=g-wordcount;
+			String tmp=""+wordcount;
+			Docid_Key_index.updateEntry(Integer.toString(count_url), k+":"+tmp);
+			Key_Docid_index.updateEntry(k,Integer.toString(count_url));
+			wordcount=g;
+			k=words.get(g);
+			}
+		}
+		words.clear();
+	}
 
 	public static void main (String[] args)
 	{	
@@ -129,31 +216,47 @@ public class Launcher
 			{
 				Launcher launcher = new Launcher();
 				int current_id = count_url;
-				launcher.updateData(crawler,current_id);
-				
-				//Title Key
-				launcher.updateTitleterm(crawler);
-				
-				//Content Key
-				launcher.updateContentterm(crawler);
+				if (Url_Id_index.containsKey(crawler.getURL())){
+					String id_temp = Url_Id_index.getEntry(crawler.getURL());
+					String old_lastmodified = Id_LastModified_index.getEntry(id_temp);
+
+					String[] info = crawler.extractPageInfo().split(";");
+					String last_modified = info[1];
+					if (!last_modified.equals(old_lastmodified))
+					{
+						launcher.updateData(crawler,count_url);
+						launcher.updateTitleterm(crawler);
+						launcher.updateContentterm(crawler);
+					}	
+					//count_url++;
+				}
+				else
+				{
+				launcher.addData(crawler,current_id);
+				launcher.addTitleterm(crawler);
+				launcher.addContentterm(crawler);
+				}
 				Constructor.commit();
 
 				while (true){
 					if (count_url < Required_Number){
 						Vector<String> links = crawler.extractLinks();
-						for (int i = 0; i < links.size(); i++){
+						for (int i = 1; i < links.size(); i++){
 							String link = links.get(i);
 							System.out.println("Processing link:"+link);
 							if (Url_Id_index.containsKey(link)){
-								/*String id_temp = Url_Id_index.getEntry(link);
+								String id_temp = Url_Id_index.getEntry(link);
 								String old_lastmodified = Id_LastModified_index.getEntry(id_temp);
 
-								if (!last_modified.equals(old_lastmodified)){
-									System.out.println("Need Update");
-								}
-								else
+								String[] info = crawler.extractPageInfo().split(";");
+								String last_modified = info[1];
+								if (!last_modified.equals(old_lastmodified))
+								{
+									launcher.updateData(crawler,count_url);
+									launcher.updateTitleterm(crawler);
+									launcher.updateContentterm(crawler);
+								}	
 								count_url++;
-								continue;*/
 							}
 							else{
 								count_url++;
@@ -164,15 +267,15 @@ public class Launcher
 								crawler.setURL(link);
 								ChildLink_index.addEntry(Integer.toString(current_id), Integer.toString(count_url));
 								ParentLink_index.addEntry(Integer.toString(count_url), Integer.toString(current_id));
-								launcher.updateData(crawler, count_url);
+								launcher.addData(crawler, count_url);
 
 								//Call function to extract words of each page here
 								//This part should be called once before while(true)
 								//Content Key
-								launcher.updateContentterm(crawler);
+								launcher.addContentterm(crawler);
 								
 								//Title Key
-                                launcher.updateTitleterm(crawler);
+                                launcher.addTitleterm(crawler);
                          		Constructor.commit();
 								crawler.setURL(current_url);
 							}
@@ -194,15 +297,15 @@ public class Launcher
 
 				Id_Url_index.printAll();
 				Url_Id_index.printAll();
-				Id_Title_index.printAll();
+				/*Id_Title_index.printAll();
 				Id_ContentLength_index.printAll();
 				Id_LastModified_index.printAll();
 				ChildLink_index.printAll();
-				ParentLink_index.printAll();
-				Docid_Key_index.printAll();
-				Key_Docid_index.printAll();
+				ParentLink_index.printAll();*/
+				//Docid_Key_index.printAll();
+				/*Key_Docid_index.printAll();
 				TitleId_Key_index.printAll();
-				Key_TitleId_index.printAll();
+				Key_TitleId_index.printAll();*/
 				
 
 				Constructor.finalization();		

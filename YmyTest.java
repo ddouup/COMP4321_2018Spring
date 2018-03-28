@@ -44,7 +44,7 @@ public class YmyTest {
             FastIterator iterDk = Launcher.Docid_Key_index.hashtable.keys();
 
 
-            for(int i=0;i<30;i++)
+            for(int i=0;i<launcher.getRequiredNumber();i++)
             {
             keyTi=(String)iterTi.next();
             keyUr=(String)iterUr.next();

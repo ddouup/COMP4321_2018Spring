@@ -2,6 +2,8 @@ import jdbm.RecordManager;
 import jdbm.RecordManagerFactory;
 import jdbm.htree.HTree;
 import jdbm.helper.FastIterator;
+
+import java.util.Arrays;
 import java.util.Vector;
 import java.io.IOException;
 import java.io.Serializable;
@@ -116,9 +118,31 @@ public class InvertedIndex
         System.out.println("");
     }
     
-    public void updateWords() throws IOException
+    public void updateKey(String Obj) throws IOException
     {
-    	
+        FastIterator iter = hashtable.values();
+        FastIterator iterk= hashtable.keys();
+        String value;
+        String valuek;
+        while( (value=(String)iter.next()) != null ) 
+        {
+           String result="";
+           String[] tokens=value.split(";");
+
+           for(String token:tokens)
+           {
+        	   if(token.equals(Obj))
+        	   {
+        		   
+        	   }
+        	   else
+        	   {
+        		   result=result+token+";";
+        	   }
+           }
+           if((valuek=(String)iterk.next())!=null)
+           updateEntry(valuek,result);
+        }
     }
 
 }
