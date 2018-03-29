@@ -119,22 +119,22 @@ public class Launcher
 		words.clear();
 	}
 	
-	public void updateData(Crawler crawler, int current_id) throws IOException
+	public void updateData(Crawler crawler, String current_id) throws IOException
 	{
-		Id_Url_index.updateEntry(Integer.toString(current_id), crawler.getURL());
-		Url_Id_index.updateEntry(crawler.getURL(), Integer.toString(current_id));
+		Id_Url_index.updateEntry(current_id, crawler.getURL());
+		Url_Id_index.updateEntry(crawler.getURL(), current_id);
 		String title="";
 		try {
 			title = crawler.extractTitle();
 		} catch (ParserException e) {
 			e.printStackTrace();
 		}
-		Id_Title_index.updateEntry(Integer.toString(current_id), title);
+		Id_Title_index.updateEntry(current_id, title);
 		String[] info = crawler.extractPageInfo().split(";");
 		String content_length = info[0];
-		Id_ContentLength_index.updateEntry(Integer.toString(current_id), content_length);
+		Id_ContentLength_index.updateEntry(current_id, content_length);
 		String last_modified = info[1];
-		Id_LastModified_index.updateEntry(Integer.toString(current_id), last_modified);
+		Id_LastModified_index.updateEntry(current_id, last_modified);
 	}
 	
 	public void updateTitleterm(Crawler crawler) throws IOException
@@ -219,11 +219,10 @@ public class Launcher
 					String last_modified = info[1];
 					if (!last_modified.equals(old_lastmodified))
 					{
-						launcher.updateData(crawler,count_url);
+						launcher.updateData(crawler,id_temp);
 						launcher.updateTitleterm(crawler);
 						launcher.updateContentterm(crawler);
-					}	
-					//count_url++;
+					}
 				}
 				else
 				{
@@ -241,9 +240,6 @@ public class Launcher
 							System.out.println("Processing link:"+link);
 							if (Url_Id_index.containsKey(link))
 							{
-								count_url++;
-								if (count_url > Required_Number)
-									break;
 								String id_temp = Url_Id_index.getEntry(link);
 								String old_lastmodified = Id_LastModified_index.getEntry(id_temp);
 
@@ -251,7 +247,7 @@ public class Launcher
 								String last_modified = info[1];
 								if (!last_modified.equals(old_lastmodified))
 								{
-									launcher.updateData(crawler,count_url);
+									launcher.updateData(crawler,id_temp);
 									launcher.updateTitleterm(crawler);
 									launcher.updateContentterm(crawler);
 								}	

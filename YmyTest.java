@@ -59,11 +59,13 @@ public class YmyTest {
             out.write(Launcher.Id_Title_index.hashtable.get(keyTi)+"\r\n");
             out.write(Launcher.Id_Url_index.hashtable.get(keyUr)+"\r\n");
             
+            out.write("Last Modified Date: ");
             if(Launcher.Id_LastModified_index.hashtable.get(keyLm).toString().equals("0"))
             out.write("unknown,");
             else
             out.write(Launcher.Id_LastModified_index.hashtable.get(keyLm)+",");
             
+            out.write("Content Length: ");
             if(Launcher.Id_ContentLength_index.hashtable.get(keyCl).toString().equals("-1"))
             out.write("unknown\r\n");
             else
