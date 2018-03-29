@@ -51,7 +51,6 @@ public class Launcher
 		try {
 			title = crawler.extractTitle();
 		} catch (ParserException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		Id_Title_index.addEntry(Integer.toString(current_id), title);
@@ -69,7 +68,6 @@ public class Launcher
 		try {
 			titlewords = crawler.extractTitleKey();
 		} catch (ParserException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		Collections.sort(titlewords);
@@ -99,7 +97,6 @@ public class Launcher
 		try {
 			words = crawler.extractWords();
 		} catch (ParserException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		Collections.sort(words);
@@ -130,7 +127,6 @@ public class Launcher
 		try {
 			title = crawler.extractTitle();
 		} catch (ParserException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		Id_Title_index.updateEntry(Integer.toString(current_id), title);
@@ -150,7 +146,6 @@ public class Launcher
 		try {
 			titlewords = crawler.extractTitleKey();
 		} catch (ParserException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		Collections.sort(titlewords);
@@ -272,8 +267,6 @@ public class Launcher
 								ParentLink_index.addEntry(Integer.toString(count_url), Integer.toString(current_id));
 								launcher.addData(crawler, count_url);
 
-								//Call function to extract words of each page here
-								//This part should be called once before while(true)
 								//Content Key
 								launcher.addContentterm(crawler);
 								

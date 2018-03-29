@@ -1,0 +1,16 @@
+All the database is saved in a file called project.db. There are total 11 hashtables in the database.
+Example: Index ----> Value
+1. ID of the url ----> url
+2. url                  ----> ID of the url
+3. ID of the url  ----> Title
+4. ID of the url  ----> Content length
+5. ID of the url  ----> Last modified date
+6. ID of the url  ----> Childlink
+7. ID of the url  ----> Parentlink
+8. ID of the url  ----> Term and frequency
+9. Term              ----> ID of the url
+10. ID of the url----> Title term and frequency
+11.Title term      ----> ID of the url 
+
+ID of the url is used as index for most of the hashtable. To increase weight calculation, term to ID and ID to term is constructed seperatly in our design. 
+

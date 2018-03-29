@@ -36,6 +36,7 @@ public class YmyTest {
             String keyLm;
             String keyCi;
             String keyDk;
+            FastIterator itercheck = Launcher.Id_Title_index.hashtable.keys();
             FastIterator iterTi = Launcher.Id_Title_index.hashtable.keys();
             FastIterator iterUr = Launcher.Id_Url_index.hashtable.keys();
             FastIterator iterCl = Launcher.Id_ContentLength_index.hashtable.keys();
@@ -44,6 +45,8 @@ public class YmyTest {
             FastIterator iterDk = Launcher.Docid_Key_index.hashtable.keys();
 
 
+            if(itercheck.next()!=null)
+            {
             for(int i=0;i<launcher.getRequiredNumber();i++)
             {
             keyTi=(String)iterTi.next();
@@ -51,6 +54,8 @@ public class YmyTest {
             keyCl=(String)iterCl.next();
             keyLm=(String)iterLm.next();
             keyDk=(String)iterDk.next();
+            if(keyTi==null)
+            	break;
             out.write(Launcher.Id_Title_index.hashtable.get(keyTi)+"\r\n");
             out.write(Launcher.Id_Url_index.hashtable.get(keyUr)+"\r\n");
             
@@ -85,6 +90,11 @@ public class YmyTest {
             }
             
             printdash(out);
+            }
+            }
+            else
+            {
+            	System.out.println("Database doesn't exist");
             }
 
             out.flush();  
