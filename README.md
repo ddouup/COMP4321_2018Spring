@@ -1,9 +1,12 @@
 # COMP4321_2018Spring
-
+Group 1 <br>
+DOU, Daihui   (ddou@connect.ust.hk) <br>
+TANG, Can-yao   (ctangaf@connect.ust.hk) <br>
+YANG, Mingyuan   (myangah@connect.ust.hk) <br>
 ## File Structure
-Replace ROOT on Tomcat by this one.
-Put all .class file in WEB-INF/classes
-Put .jsp files in WEB-INF/content
+Replace ROOT on Tomcat by this one. <br>
+Put all .class file in WEB-INF/classes <br>
+Put .jsp files in WEB-INF/content <br>
 ## Crawler
 compile:
 ```
