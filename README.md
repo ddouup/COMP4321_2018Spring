@@ -1,8 +1,9 @@
 # COMP4321_2018Spring
-* Crawler
-* Indexer
-* Test Program
 
+## File Structure
+Replace ROOT on Tomcat by this one.
+Put all .class file in WEB-INF/classes
+Put .jsp files in WEB-INF/content
 ## Crawler
 compile:
 ```
@@ -15,15 +16,22 @@ run:
 java -cp lib/*:. Launcher
 ```
 
-## Indexer
-compile:
-
 ## Test Program
 compile:
+```
+javac -cp .:lib/* YmyTest.java
+```
+run:
+```
+java -cp lib/*:. YmyTest
+```
 
 ## TODO:
 ```
-1. Check out-of-date page
+1. Update Key_Docid_index to be -> Key: Word; Content: "Id,tf"
+2. Search
+3. Server
+
 ```
 
 ## Questions:
