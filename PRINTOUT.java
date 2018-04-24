@@ -49,20 +49,15 @@ public class PRINTOUT
 			{
                 PRINTOUT PRINT=new PRINTOUT();
 				Id_Url_index.printAll();
-				//Url_Id_index.printAll();
-				//Id_Title_index.printAll();
-				//Id_ContentLength_index.printAll();
-				//Id_LastModified_index.printAll();
-				ChildLink_index.printAll();
-<<<<<<< HEAD
+				Url_Id_index.printAll();
+				Id_Title_index.printAll();
+				Id_ContentLength_index.printAll();
+				Id_LastModified_index.printAll();
 				ParentLink_index.printAll();
-=======
-				ParentLink_index.printAll();*/
->>>>>>> 4abba38441b8eb17046739017c346f30b5effa03
-				//Docid_Key_index.printAll();
-				//Key_Docid_index.printAll();
-				//TitleId_Key_index.printAll();
-				//Key_TitleId_index.printAll();
+				Docid_Key_index.printAll();
+				Key_Docid_index.printAll();
+				TitleId_Key_index.printAll();
+				Key_TitleId_index.printAll();
 				Key_Weight_index.printAll();
 				
 				Constructor.finalization();		
