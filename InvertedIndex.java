@@ -5,8 +5,13 @@ import jdbm.helper.FastIterator;
 
 import java.util.Arrays;
 import java.util.Vector;
+
+import org.htmlparser.beans.LinkBean;
+import org.htmlparser.util.ParserException;
+
 import java.io.IOException;
 import java.io.Serializable;
+import java.net.URL;
 
 public class InvertedIndex
 {
@@ -117,6 +122,22 @@ public class InvertedIndex
         }
         System.out.println("");
     }
+    
+	public Vector<String> ReturnKey() throws ParserException, IOException
+	{
+		
+		// ADD YOUR CODES HERE
+		Vector<String> result = new Vector<String>();
+        FastIterator iter = hashtable.keys();
+        String key;
+        result.add("");
+        while( (key=(String)iter.next()) != null ) 
+        {
+                result.add(key);
+        }
+
+		return result;
+	}
     
     public void updateKey(String Obj) throws IOException
     {

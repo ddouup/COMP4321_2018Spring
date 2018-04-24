@@ -20,6 +20,7 @@ public class PRINTOUT
 	public	static InvertedIndex Key_Docid_index;
 	public	static InvertedIndex TitleId_Key_index;
 	public	static InvertedIndex Key_TitleId_index;
+	public	static InvertedIndex Key_Weight_index;
 
 
 	PRINTOUT() throws IOException
@@ -36,6 +37,7 @@ public class PRINTOUT
 		Key_Docid_index = new InvertedIndex("project","key_docid");
 		TitleId_Key_index =new InvertedIndex("project","title_key");
 		Key_TitleId_index =new InvertedIndex("project","key_titleid");
+		Key_Weight_index =new InvertedIndex("project","key_weight");
 	}
 
 	public static void main (String[] args)
@@ -46,19 +48,19 @@ public class PRINTOUT
 			try
 			{
                 PRINTOUT PRINT=new PRINTOUT();
-				/*Id_Url_index.printAll();
-				Url_Id_index.printAll();
-				Id_Title_index.printAll();
+				Id_Url_index.printAll();
+				//Url_Id_index.printAll();
+				/*Id_Title_index.printAll();
 				Id_ContentLength_index.printAll();
 				Id_LastModified_index.printAll();
 				ChildLink_index.printAll();
 				ParentLink_index.printAll();*/
-				Docid_Key_index.printAll();
-				Key_Docid_index.printAll();
+				//Docid_Key_index.printAll();
+				//Key_Docid_index.printAll();
 				//TitleId_Key_index.printAll();
 				//Key_TitleId_index.printAll();
+				Key_Weight_index.printAll();
 				
-
 				Constructor.finalization();		
 			}
 			catch(IOException ex)

@@ -8,7 +8,7 @@ public class Launcher
 	private static int Required_Number = 30;
 	private static int count_url;
 	private static int count_term;
-	private static InvertedIndex Constructor;
+	public  static InvertedIndex Constructor;
 	public	static InvertedIndex Id_Url_index;
 	public	static InvertedIndex Url_Id_index;
 	public	static InvertedIndex Id_Title_index;
@@ -20,6 +20,8 @@ public class Launcher
 	public	static InvertedIndex Key_Docid_index;
 	public	static InvertedIndex TitleId_Key_index;
 	public	static InvertedIndex Key_TitleId_index;
+	public	static InvertedIndex Key_Weight_index;
+
 
 
 	Launcher() throws IOException
@@ -36,6 +38,8 @@ public class Launcher
 		Key_Docid_index = new InvertedIndex("project","key_docid");
 		TitleId_Key_index =new InvertedIndex("project","title_key");
 		Key_TitleId_index =new InvertedIndex("project","key_titleid");
+		//Newly added table
+		Key_Weight_index =new InvertedIndex("project","key_weight");
 	}
 	
 	public int getRequiredNumber() throws IOException
