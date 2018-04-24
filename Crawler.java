@@ -16,6 +16,7 @@ import org.htmlparser.beans.LinkBean;
 import org.htmlparser.beans.FilterBean;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.HttpURLConnection;
 import java.text.SimpleDateFormat;
 import java.io.IOException;
 
@@ -73,7 +74,24 @@ public class Crawler
 		bean.setURL(url);
 		URL[] urls = bean.getLinks();
 		for (URL s : urls) {
-		    result.add(s.toString());
+			if(!s.toString().contains("facebook") && !s.toString().contains("instagram"))
+			{	
+				try
+				{
+					URL obj = new URL(url);
+					HttpURLConnection conn = (HttpURLConnection) obj.openConnection();
+					conn.setRequestMethod("HEAD");
+					if (conn.getResponseCode() == HttpURLConnection.HTTP_OK)
+						result.add(s.toString());
+					else
+						System.out.println("Url not avaiable");
+		    	}
+		    	catch (Exception e) 
+				{
+					e.printStackTrace();
+					return result;
+				}
+			}
 		}
 
 		//test only

@@ -5,7 +5,7 @@ import java.io.IOException;
 
 public class Launcher
 {	
-	private static int Required_Number = 30;
+	private static int Required_Number = 300;
 	private static int count_url;
 	private static int count_term;
 	public  static InvertedIndex Constructor;
@@ -51,6 +51,7 @@ public class Launcher
 	{
 		Id_Url_index.addEntry(Integer.toString(current_id), crawler.getURL());
 		Url_Id_index.addEntry(crawler.getURL(), Integer.toString(current_id));
+		System.out.println("Id_Url_index added");
 		String title="";
 		try {
 			title = crawler.extractTitle();
@@ -58,11 +59,13 @@ public class Launcher
 			e.printStackTrace();
 		}
 		Id_Title_index.addEntry(Integer.toString(current_id), title);
+		System.out.println("Id_Title_index added");
 		String[] info = crawler.extractPageInfo().split(";");
 		String content_length = info[0];
 		Id_ContentLength_index.addEntry(Integer.toString(current_id), content_length);
 		String last_modified = info[1];
 		Id_LastModified_index.addEntry(Integer.toString(current_id), last_modified);
+		System.out.println("Id_ContentLength_index and Id_LastModified_index_added");
 	}
 	
 	public void addTitleterm(Crawler crawler) throws IOException
