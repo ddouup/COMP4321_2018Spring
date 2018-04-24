@@ -105,13 +105,17 @@ public class Launcher
 		k=words.get(wordcount);
 		else
 		Docid_Key_index.addEntry(Integer.toString(count_url), "");
-		for (int g = 0; g < words.size(); g++){
+		for (int g = 0; g < words.size(); g++)
+		{
 			if(!k.equals(words.get(g)))
 			{
 			wordcount=g-wordcount;
+			if(wordcount>2)
+			{
 			String tmp=""+wordcount;
 			Docid_Key_index.addEntry(Integer.toString(count_url), k+":"+tmp);
 			Key_Docid_index.addEntry(k,Integer.toString(count_url));
+			}
 			wordcount=g;
 			k=words.get(g);
 			}
@@ -287,17 +291,6 @@ public class Launcher
 				System.out.println("Finish");
 				System.out.println("");
 
-				Id_Url_index.printAll();
-				Url_Id_index.printAll();
-				/*Id_Title_index.printAll();
-				Id_ContentLength_index.printAll();
-				Id_LastModified_index.printAll();
-				ChildLink_index.printAll();
-				ParentLink_index.printAll();*/
-				//Docid_Key_index.printAll();
-				/*Key_Docid_index.printAll();
-				TitleId_Key_index.printAll();
-				Key_TitleId_index.printAll();*/
 				
 
 				Constructor.finalization();		
