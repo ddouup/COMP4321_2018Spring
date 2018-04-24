@@ -55,11 +55,11 @@ public class PRINTOUT
 				Id_LastModified_index.printAll();
 				ChildLink_index.printAll();
 				ParentLink_index.printAll();*/
-				Docid_Key_index.printAll();
+				//Docid_Key_index.printAll();
 				//Key_Docid_index.printAll();
 				//TitleId_Key_index.printAll();
 				//Key_TitleId_index.printAll();
-				//Key_Weight_index.printAll();
+				Key_Weight_index.printAll();
 				
 				Constructor.finalization();		
 			}
