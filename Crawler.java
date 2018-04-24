@@ -74,9 +74,9 @@ public class Crawler
 		bean.setURL(url);
 		URL[] urls = bean.getLinks();
 		for (URL s : urls) {
-			if(!s.toString().contains("facebook") && !s.toString().contains("instagram"))
+			if(!s.toString().contains("facebook") && !s.toString().contains("instagram") && !s.toString().contains("youtube"))
 			{	
-				try
+				/*try
 				{
 					URL obj = new URL(url);
 					HttpURLConnection conn = (HttpURLConnection) obj.openConnection();
@@ -90,7 +90,8 @@ public class Crawler
 				{
 					e.printStackTrace();
 					return result;
-				}
+				}*/
+				result.add(s.toString());
 			}
 		}
 

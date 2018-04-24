@@ -5,7 +5,7 @@ import java.io.IOException;
 
 public class Launcher
 {	
-	private static int Required_Number = 300;
+	private static int Required_Number = 1000;
 	private static int count_url;
 	private static int count_term;
 	public  static InvertedIndex Constructor;
@@ -209,6 +209,25 @@ public class Launcher
 		}
 		words.clear();
 	}
+	
+	public static boolean Parent_ChildExists(String parentId, String childId) throws IOException
+	{
+		if(ChildLink_index.containsKey(parentId))
+		{
+			String[] childLinks = ChildLink_index.getEntry(parentId).split(";");
+			for (int i = 0; i < childLinks.length; i++)
+			{
+				if(childLinks[i].equals(childId))
+				{
+					System.out.println("Parent_Child link already exists.");
+					return true;
+				}
+			}
+			return false;
+		}
+		else
+			return false;
+	}
 
 	public static void main (String[] args)
 	{	
@@ -246,22 +265,34 @@ public class Launcher
 				while (true){
 					if (count_url < Required_Number){
 						Vector<String> links = crawler.extractLinks();
-						for (int i = 1; i < links.size(); i++){
+						for (int i = 0; i < links.size(); i++){
 							String link = links.get(i);
-							System.out.println("Processing link:"+link);
+							System.out.println("Processing link:"+link+", Id: " + current_id);
 							if (Url_Id_index.containsKey(link))
 							{
 								String id_temp = Url_Id_index.getEntry(link);
+								System.out.println("Id_temp: "+id_temp);
+								if(!Parent_ChildExists(Integer.toString(current_id), id_temp))
+								{
+									ChildLink_index.addEntry(Integer.toString(current_id), id_temp);
+									ParentLink_index.addEntry(id_temp, Integer.toString(current_id));
+								}
 								String old_lastmodified = Id_LastModified_index.getEntry(id_temp);
-
+								
+								String current_url = crawler.getURL();
+								crawler.setURL(link);
+								
 								String[] info = crawler.extractPageInfo().split(";");
 								String last_modified = info[1];
+								
 								if (!last_modified.equals(old_lastmodified))
 								{
 									launcher.updateData(crawler,id_temp);
 									launcher.updateTitleterm(crawler);
 									launcher.updateContentterm(crawler);
-								}	
+								}
+								
+								crawler.setURL(current_url);
 							}
 							else{
 								count_url++;
