@@ -90,14 +90,32 @@ public class DataProcess
 	{	
 		 DataProcess Data=new DataProcess();
          Vector<String> Key=new Vector<String>();
-         Key=launcher.Key_Docid_index.ReturnKey();
+         String Content="";
          String word="";
-         double score=0.0;
- 		for(int i = 1; i < Key.size(); i++)		
+        double score=0.0;
+ 		for(int i = 1; i < launcher.getRequiredNumber(); i++)		
  		{
+ 	        Content=launcher.Docid_Key_index.getEntry(Integer.toString(i));
+ 	        if(Content!=null)
+ 	        {
+ 	          String[] tokens=Content.split(";");
+ 	          for(String token:tokens)
+ 	          {
+ 	        	 String[] tmp=token.split(":");
+ 	        	 boolean m=false;
+ 	        	 for(String t:tmp)
+ 	        	 {
+ 	        		 if(m=false)
+ 	        		 word=t;
+ 	        		 m=true;
+ 	        		 
+ 	        	 }
+ 	          }
+ 	        }
+ 	        
  			word=Key.get(i);
  			score=Data.TermWeightCalculate(Integer.toString(i),word);
- 			launcher.Key_Weight_index.delEntry(Integer.toString(i));
+ 			launcher.Key_Weight_index.delEntry(word);
  			launcher.Key_Weight_index.addEntry(word, String.valueOf(score));		
  		}
 		launcher.Constructor.finalization();
