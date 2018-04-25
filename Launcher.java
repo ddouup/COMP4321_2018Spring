@@ -41,7 +41,6 @@ public class Launcher
 		Key_TitleId_index =new InvertedIndex("project","key_titleid");
 		//Newly added table
 		Key_Weight_index =new InvertedIndex("project","key_weight");
-		Phrase_Weight_index =new InvertedIndex("project","phrase_weight");
 	}
 	
 	public int getRequiredNumber() throws IOException

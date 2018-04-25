@@ -1,39 +1,56 @@
 import java.util.Vector;
 import java.util.Comparator;
-import java.util.Collections;  
-//import java.util.List;
-//import java.util.Map;
-import java.util.Date;
-import org.htmlparser.beans.StringBean;
-import org.htmlparser.Node;
-import org.htmlparser.NodeFilter;
-import org.htmlparser.Parser;
-import org.htmlparser.filters.AndFilter;
-import org.htmlparser.filters.TagNameFilter;
-import org.htmlparser.tags.LinkTag;
-import org.htmlparser.util.NodeList;
-import org.htmlparser.util.ParserException;
-import java.util.StringTokenizer;
-import org.htmlparser.beans.LinkBean;
-import org.htmlparser.beans.FilterBean;
-import java.net.URL;
-import java.net.URLConnection;
-import java.text.SimpleDateFormat;
 import java.io.IOException;
+import java.util.Collections;  
+import java.util.StringTokenizer;
+
+
+ class DocCom {
+	public Vector<String> word;
+	public Vector<Integer> wordw;
+	public Vector<Double> weight;
+	public Double cossin;
+	public int id;
+	public double sqrtw;
+	public double addwt;
+	DocCom() throws IOException
+	{
+		id=0;
+		word=new Vector<String>();
+		wordw=new Vector<Integer>();
+		weight=new Vector<Double>();
+		cossin=0.0;
+		sqrtw=0.0;
+		addwt=0.0;
+	}
+	
+	public void CalCos(double sqrtt)
+	{
+		for(int i=0;i<word.size();i++)
+		{
+		   sqrtw=sqrtw+weight.get(i);
+		   addwt=addwt+weight.get(i)*wordw.get(i);
+		}
+		cossin=(addwt)/(Math.sqrt(sqrtw)*Math.sqrt(sqrtt));
+	}
+
+}
 
 public class SearchEngine
 {	
-	public	static Launcher launcher;
+	public static Launcher launcher;
 	public static Vector<Integer> DocID;
 	public static Vector<DocCom> Doc;
-	public static Vector<Double> wei;
+	public static Vector<Integer> wei;
+	public static double sqrtt;
 	
 	SearchEngine() throws IOException
 	{
 		launcher=new Launcher();
 		DocID=new Vector<Integer>();
 		Doc=new Vector<DocCom>();
-		wei=new Vector<Double>();
+		wei=new Vector<Integer>();
+		sqrtt=0.0;
 	}
 	
     static class CosComparator implements Comparator {  
@@ -44,7 +61,7 @@ public class SearchEngine
         }  
     }  
 	
-	public void Sort(Vector<String> result,Vector<Double> wei) throws IOException
+	public void Sort(Vector<String> result,Vector<Integer> wei) throws IOException
 	{
 		Vector<String> tmpweight=new Vector<String>();
 		for(int i=0;i<result.size();i++)
@@ -64,39 +81,12 @@ public class SearchEngine
 		
 		for(int i=0;i<Doc.size();i++)
 		{
-			Doc.get(i).CalCos();
+			Doc.get(i).CalCos(sqrtt);
 		}
 		Collections.sort(Doc, new CosComparator());
 	}
 	
-	
-	public void phraseSort(Vector<String> result,Vector<Double> wei) throws IOException
-	{
-		Vector<String> tmpweight=new Vector<String>();
-		for(int i=0;i<result.size();i++)
-		{
-			String tmp=launcher.Phrase_Weight_index.getEntry(result.get(i));
-			if(tmp==null)
-			{
-				tmpweight.add("0");
-			}
-			else
-			{
-			tmpweight.add(tmp);
-			}
-		}
-		
-        update(result,wei,tmpweight);
-		
-		for(int i=0;i<Doc.size();i++)
-		{
-			Doc.get(i).CalCos();
-		}
-		Collections.sort(Doc, new CosComparator());
-	}
-	
-	
-	public void update(Vector<String> result,Vector<Double> wei,Vector<String> tmpweight) throws IOException
+	public void update(Vector<String> result,Vector<Integer> wei,Vector<String> tmpweight) throws IOException
 	{
 	
 		for(int i=0;i<result.size();i++)
@@ -156,16 +146,16 @@ public class SearchEngine
         }
 	}
 	
-    public boolean phrasequery(String query)
+    public int phrasequery(String query)
     {
     	int result=query.indexOf("\"");
     	if(result==-1)
-    		return false;
-    	String substr=query.substring(result);
+    		return -1;
+    	String substr=query.substring(result+1);
     	result=substr.indexOf("\"");
     	if(result==-1)
-    		return false;
-    	return true;
+    		return -1;
+    	return result;
     }
     
     public Vector<String> queryprocess(String query)
@@ -174,6 +164,9 @@ public class SearchEngine
     	StopStem stopStem = new StopStem("stopwords.txt");
 		Vector<String> result=new Vector<String>();
 		StringTokenizer st = new StringTokenizer(query);
+		int endindex=phrasequery(query);
+		if(endindex==-1)
+		{
 		while (st.hasMoreTokens()) 
 		{
 			String word = st.nextToken();
@@ -183,24 +176,63 @@ public class SearchEngine
 				boolean isWord=word.matches("^[A-Za-z0-9]+");
 				if(isWord)
 				{
-					if(!result.contains(word))
 				    result.add(word);
 				}
 			}
 		}
+		}
+		else
+		{
+			String[] tokens=query.split("\"");
+            for(String token:tokens)
+            {
+    			if (!stopStem.isStopWord(token))
+    			{
+    				token = stopStem.stem(token);
+    				boolean isWord=token.matches("^[A-Za-z0-9]+");
+    				if(isWord)
+    				{
+    				    result.add(token);
+    				}
+    			}
+            }
+		}
 		return result;
     }
+    
+    public void updateterwei(Vector<String> result)
+    {
+    	
+		Collections.sort(result);
+		String k="";
+		int wordcount=0;
+		if(result.size()!=0)								
+		{
+		k=result.get(wordcount);
+		for (int g = 0; g < result.size(); g++)
+		{
+			if(!k.equals(result.get(g)))
+			{
+			wordcount=g-wordcount;
+			wei.add(wordcount);
+			sqrtt=sqrtt+wordcount;
+			k=result.get(g);
+			wordcount=g;
+			}
+		}
+		}
+    }
+    
+    
 
 	public Vector<PageList> search(String query) throws IOException
 	{
-		//Phrase Search, Query Process
+		//Query Process
 		Vector<PageList> list= new Vector<PageList>();
 		Vector<String> result=new Vector<String>();
         result=queryprocess(query);
+        updateterwei(result);
 		
-		if(phrasequery(query))
-		phraseSort(result,wei);
-		else
 		Sort(result,wei);
 		
 		for(int i=0;i<Doc.size();i++)
