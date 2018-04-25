@@ -9,9 +9,9 @@ public class PageList {
 	
 	PageList ()
 	{
-		 String title="";
+		String title="";
 		 String url="";
-		 String key="";
+		String key="";
 		 String datesizeofpage="";
 		 String parentlink="";
 		 String childlink="";

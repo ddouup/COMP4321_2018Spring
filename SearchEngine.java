@@ -23,23 +23,101 @@ public class SearchEngine
 {	
 	public	static Launcher launcher;
 	public static Vector<Integer> DocID;
+	public static Vector<DocCom> Doc;
 	
 	SearchEngine() throws IOException
 	{
 		launcher=new Launcher();
 		DocID=new Vector<Integer>();
+		Doc=new Vector<DocCom>();
 	}
 	
-	public double[][] Sort(double [][]a)
+	public void Sort(Vector<String> result) throws IOException
+	{
+		Vector<String> tmpweight=new Vector<String>();
+		for(int i=0;i<result.size();i++)
+		{
+			String tmp=launcher.Key_Weight_index.getEntry(result.get(i));
+			if(tmp==null)
+			{
+				tmpweight.add("0");
+			}
+			else
+			{
+			tmpweight.add(tmp);
+			}
+		}
+		
+		for(int i=0;i<result.size();i++)
+		{
+			String value=tmpweight.get(i);
+			if(!value.equals("0"))
+			{
+			String[] tokens=value.split(";");
+	         for(String token:tokens)
+	         {
+	       	 String[] tmp=token.split(",");
+	       	 boolean m=false;
+	       	 int docID=0;
+	       	 DocCom dd=new DocCom();
+	       	 dd.word.add(result.get(i));
+	       	 for(String t:tmp)
+	       	 {
+	       		 if(m==true)
+	       		 {
+	       		   dd.weight.add(Double.parseDouble(t));
+	       		 }
+	       		 if(m==false)
+	       		 {
+	       		 docID=Integer.parseInt(t);
+	       		 dd.id=Integer.parseInt(t);
+	       		 m=true;
+	       		 if(!DocID.contains(docID))
+	       		 {
+	       			 DocID.add(docID);
+	       		 }
+	       		 }
+	       		  
+	       	 }
+       		 if(!DocID.contains(docID))
+	       	 Doc.add(dd);
+       		 else
+       		 {
+       		 UpdateDoc(dd); 
+       		 }
+	         }
+		}
+		}
+		
+		
+		
+		
+	}
+	
+	public void UpdateDoc(DocCom dd) throws IOException
+	{
+        for(int i=0;i<Doc.size();i++)
+        {
+        	DocCom odd=Doc.get(i);
+        	if(odd.id==dd.id)
+        	{
+        		Doc.get(i).weight.add(dd.weight.get(0));
+        		Doc.get(i).word.add(dd.word.get(0));
+        	}
+        }
+	}
+	
+	public void Cal()
 	{
 		
-		return a;
 	}
 	
 	public Vector<Integer> ranksort(Vector<String> result) throws IOException
 	{
+		
+		
 		//Output ranking
-		Vector<String> tmpweight=new Vector<String>();
+		/*Vector<String> tmpweight=new Vector<String>();
 		for(int i=0;i<result.size();i++)
 		{
 			String tmp=launcher.Key_Weight_index.getEntry(result.get(i));
@@ -99,7 +177,7 @@ public class SearchEngine
 		  Double cossin=(product)/(Math.sqrt(vecsize)*Math.sqrt(result.size()));
 		  arr[1][DocID.get(i)]=cossin;
 		}
-		
+		*/
 		return null;
 	}
 	
@@ -145,9 +223,10 @@ public class SearchEngine
 		
 		Vector<Integer> rank=new Vector<Integer>();
 		if(phrasequery(query))
-			rank=phraseranksort(result);
+		rank=phraseranksort(result);
 		else
 		rank=ranksort(result);
+		
 		for(int i=0;i<rank.size();i++)
 		{   
 			PageList page=new PageList();
