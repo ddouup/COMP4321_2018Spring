@@ -128,6 +128,37 @@ public class DataProcess
  	          }
  	        }
  		}
+ 		
+ 		for(int i = 1; i < launcher.getRequiredNumber(); i++)		
+ 		{
+ 	        Content=launcher.TitleId_Key_index.getEntry(Integer.toString(i));
+ 	        if(Content!=null)
+ 	        {
+ 	          String[] tokens=Content.split(";");
+ 	          for(String token:tokens)
+ 	          {
+ 	        	 String[] tmp=token.split(":");
+ 	        	 boolean m=false;
+ 	             int tf=0;
+ 	        	 for(String t:tmp)
+ 	        	 {
+ 	        		 if(m==true)
+ 	        		 {
+ 	        		   tf=Integer.parseInt(t);
+ 	        		 }
+ 	        		 if(m==false)
+ 	        		 {
+ 	        		 word=t;
+ 	        		 m=true;
+ 	        		 } 
+ 	        	 }
+ 	 			score=Data.TermWeightCalculate(tf,word);
+ 	 			String value=String.valueOf(i)+","+String.valueOf(df.format(score));
+ 	 			launcher.TitlePhrase_Weight_index.addEntry(word, value); 
+ 	          }
+ 	        }
+ 		}
+ 		
 		launcher.Constructor.finalization();
  		System.out.print("Done");
 	}

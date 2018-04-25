@@ -20,8 +20,11 @@ public class Launcher
 	public	static InvertedIndex Key_Docid_index;
 	public	static InvertedIndex TitleId_Key_index;
 	public	static InvertedIndex Key_TitleId_index;
+	
 	public	static InvertedIndex Key_Weight_index;
-	public  static InvertedIndex Phrase_Weight_index;
+	public  static InvertedIndex TitlePhrase_Weight_index;
+	public	static InvertedIndex Docid_SortKey_index;
+	
 
 
 
@@ -41,6 +44,9 @@ public class Launcher
 		Key_TitleId_index =new InvertedIndex("project","key_titleid");
 		//Newly added table
 		Key_Weight_index =new InvertedIndex("project","key_weight");
+		TitlePhrase_Weight_index = new InvertedIndex("project","titlephrase_weight");
+		Docid_SortKey_index = new InvertedIndex("project","docid_sortkey");
+
 	}
 	
 	public int getRequiredNumber() throws IOException
