@@ -1,4 +1,6 @@
 import java.util.Vector;
+import java.util.Comparator;
+import java.util.Collections;  
 //import java.util.List;
 //import java.util.Map;
 import java.util.Date;
@@ -24,15 +26,25 @@ public class SearchEngine
 	public	static Launcher launcher;
 	public static Vector<Integer> DocID;
 	public static Vector<DocCom> Doc;
+	public static Vector<Double> wei;
 	
 	SearchEngine() throws IOException
 	{
 		launcher=new Launcher();
 		DocID=new Vector<Integer>();
 		Doc=new Vector<DocCom>();
+		wei=new Vector<Double>();
 	}
 	
-	public void Sort(Vector<String> result) throws IOException
+    static class CosComparator implements Comparator {  
+        public int compare(Object obj1, Object obj2) { 
+             DocCom D1=(DocCom)obj1;
+             DocCom D2=(DocCom)obj2;
+            return new Double(D1.cossin).compareTo(new Double(D2.cossin));  
+        }  
+    }  
+	
+	public void Sort(Vector<String> result,Vector<Double> wei) throws IOException
 	{
 		Vector<String> tmpweight=new Vector<String>();
 		for(int i=0;i<result.size();i++)
@@ -48,6 +60,45 @@ public class SearchEngine
 			}
 		}
 		
+        update(result,wei,tmpweight);
+		
+		for(int i=0;i<Doc.size();i++)
+		{
+			Doc.get(i).CalCos();
+		}
+		Collections.sort(Doc, new CosComparator());
+	}
+	
+	
+	public void phraseSort(Vector<String> result,Vector<Double> wei) throws IOException
+	{
+		Vector<String> tmpweight=new Vector<String>();
+		for(int i=0;i<result.size();i++)
+		{
+			String tmp=launcher.Phrase_Weight_index.getEntry(result.get(i));
+			if(tmp==null)
+			{
+				tmpweight.add("0");
+			}
+			else
+			{
+			tmpweight.add(tmp);
+			}
+		}
+		
+        update(result,wei,tmpweight);
+		
+		for(int i=0;i<Doc.size();i++)
+		{
+			Doc.get(i).CalCos();
+		}
+		Collections.sort(Doc, new CosComparator());
+	}
+	
+	
+	public void update(Vector<String> result,Vector<Double> wei,Vector<String> tmpweight) throws IOException
+	{
+	
 		for(int i=0;i<result.size();i++)
 		{
 			String value=tmpweight.get(i);
@@ -61,6 +112,7 @@ public class SearchEngine
 	       	 int docID=0;
 	       	 DocCom dd=new DocCom();
 	       	 dd.word.add(result.get(i));
+	       	 dd.wordw.add(wei.get(i));
 	       	 for(String t:tmp)
 	       	 {
 	       		 if(m==true)
@@ -88,10 +140,6 @@ public class SearchEngine
 	         }
 		}
 		}
-		
-		
-		
-		
 	}
 	
 	public void UpdateDoc(DocCom dd) throws IOException
@@ -103,88 +151,9 @@ public class SearchEngine
         	{
         		Doc.get(i).weight.add(dd.weight.get(0));
         		Doc.get(i).word.add(dd.word.get(0));
+        		Doc.get(i).wordw.add(dd.wordw.get(0));
         	}
         }
-	}
-	
-	public void Cal()
-	{
-		
-	}
-	
-	public Vector<Integer> ranksort(Vector<String> result) throws IOException
-	{
-		
-		
-		//Output ranking
-		/*Vector<String> tmpweight=new Vector<String>();
-		for(int i=0;i<result.size();i++)
-		{
-			String tmp=launcher.Key_Weight_index.getEntry(result.get(i));
-			if(tmp==null)
-			{
-				tmpweight.add("0");
-			}
-			else
-			{
-			tmpweight.add(tmp);
-			}
-		}
-		
-		double [][] array=new double [result.size()][launcher.getRequiredNumber()+1];
-		
-		for(int i=0;i<result.size();i++)
-		{
-			String value=tmpweight.get(i);
-			if(!value.equals("0"))
-			{
-			String[] tokens=value.split(";");
-	         for(String token:tokens)
-	         {
-	       	 String[] tmp=token.split(",");
-	       	 boolean m=false;
-	       	 int docID=0;
-	       	 for(String t:tmp)
-	       	 {
-	       		 if(m==true)
-	       		 {
-	       		   array[i][docID]=Double.parseDouble(t);
-	       		 }
-	       		 if(m==false)
-	       		 {
-	       		 docID=Integer.parseInt(t);
-	       		 if(!DocID.contains(docID))
-	       		 DocID.add(docID);
-	       		 m=true;
-	       		 } 
-	       	 }
-	         }
-		}
-		}
-		
-		double [][] arr=new double [1][launcher.getRequiredNumber()+1];
-		//Vector<Double> value=new Vector<Double>();
-		for(int i=0;i<DocID.size();i++)
-		{
-			Double vecsize=0.0;
-			Double quesize=0.0;
-			Double product=0.0;
-		  for(int j=0;j<result.size();i++)
-		  {
-			  vecsize=vecsize+array[j][i]*array[j][i];
-			  product=product+array[j][i];
-		  }
-		  Double cossin=(product)/(Math.sqrt(vecsize)*Math.sqrt(result.size()));
-		  arr[1][DocID.get(i)]=cossin;
-		}
-		*/
-		return null;
-	}
-	
-	public Vector<Integer> phraseranksort(Vector<String> result) throws IOException
-	{
-		//Output ranking
-        return null;
 	}
 	
     public boolean phrasequery(String query)
@@ -198,12 +167,11 @@ public class SearchEngine
     		return false;
     	return true;
     }
-
-	public Vector<PageList> search(String query) throws IOException
-	{
-		//Phrase Search, Query Process
-		StopStem stopStem = new StopStem("stopwords.txt");
-		Vector<PageList> list= new Vector<PageList>();
+    
+    public Vector<String> queryprocess(String query)
+    {
+    	//update wei
+    	StopStem stopStem = new StopStem("stopwords.txt");
 		Vector<String> result=new Vector<String>();
 		StringTokenizer st = new StringTokenizer(query);
 		while (st.hasMoreTokens()) 
@@ -220,22 +188,30 @@ public class SearchEngine
 				}
 			}
 		}
+		return result;
+    }
+
+	public Vector<PageList> search(String query) throws IOException
+	{
+		//Phrase Search, Query Process
+		Vector<PageList> list= new Vector<PageList>();
+		Vector<String> result=new Vector<String>();
+        result=queryprocess(query);
 		
-		Vector<Integer> rank=new Vector<Integer>();
 		if(phrasequery(query))
-		rank=phraseranksort(result);
+		phraseSort(result,wei);
 		else
-		rank=ranksort(result);
+		Sort(result,wei);
 		
-		for(int i=0;i<rank.size();i++)
+		for(int i=0;i<Doc.size();i++)
 		{   
 			PageList page=new PageList();
-			page.url=launcher.Id_Url_index.getEntry(String.valueOf(rank.get(i)));
-			page.title=launcher.Id_Title_index.getEntry(String.valueOf(rank.get(i)));
-			page.key=launcher.Docid_Key_index.getEntry(String.valueOf(rank.get(i)));
-			page.childlink=launcher.ChildLink_index.getEntry(String.valueOf(rank.get(i)));
-			page.parentlink=launcher.ParentLink_index.getEntry(String.valueOf(rank.get(i)));
-			page.datesizeofpage=launcher.Id_LastModified_index.getEntry(String.valueOf(rank.get(i)))+","+launcher.Id_ContentLength_index.getEntry(String.valueOf(rank.get(i)));
+			page.url=launcher.Id_Url_index.getEntry(String.valueOf(Doc.get(i).id));
+			page.title=launcher.Id_Title_index.getEntry(String.valueOf(Doc.get(i).id));
+			page.key=launcher.Docid_Key_index.getEntry(String.valueOf(Doc.get(i).id));
+			page.childlink=launcher.ChildLink_index.getEntry(String.valueOf(Doc.get(i).id));
+			page.parentlink=launcher.ParentLink_index.getEntry(String.valueOf(Doc.get(i).id));
+			page.datesizeofpage=launcher.Id_LastModified_index.getEntry(String.valueOf(Doc.get(i).id))+","+launcher.Id_ContentLength_index.getEntry(String.valueOf(Doc.get(i).id));
 			list.add(page);
 		}
 		return list;

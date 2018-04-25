@@ -32,6 +32,5 @@ public class DocCom {
 		}
 		cossin=(addwt)/(Math.sqrt(sqrtw)*Math.sqrt(sqrtt));
 	}
-	
 
 }
