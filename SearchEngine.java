@@ -13,8 +13,10 @@ import java.util.StringTokenizer;
 	public int id;
 	public double sqrtw;
 	public double addwt;
+	public boolean same;
 	DocCom() throws IOException
 	{
+		same=false;
 		id=0;
 		word=new Vector<String>();
 		wordw=new Vector<Integer>();
@@ -35,7 +37,7 @@ import java.util.StringTokenizer;
 	}
 
 }
- 
+  
 
 class PageList {
 	public String title;
@@ -64,6 +66,7 @@ public class SearchEngine
 	public static Launcher launcher;
 	public static Vector<Integer> DocID;
 	public static Vector<DocCom> Doc;
+	public static Vector<DocCom> Tit;
 	public static Vector<Integer> wei;
 	public static double sqrtt;
 	
@@ -87,9 +90,12 @@ public class SearchEngine
 	public void Sort(Vector<String> result,Vector<Integer> wei) throws IOException
 	{
 		Vector<String> tmpweight=new Vector<String>();
+		Vector<String> tmpweightT=new Vector<String>();
+		
 		for(int i=0;i<result.size();i++)
 		{
 			String tmp=launcher.Key_Weight_index.getEntry(result.get(i));
+			String tmpT=launcher.TitlePhrase_Weight_index.getEntry(result.get(i));
 			if(tmp==null)
 			{
 				tmpweight.add("0");
@@ -98,23 +104,57 @@ public class SearchEngine
 			{
 			tmpweight.add(tmp);
 			}
+			if(tmpT==null)
+			{
+				tmpweightT.add("0");
+			}
+			else
+			{
+			tmpweightT.add(tmpT);
+			}
+			
 		}
 		
-        update(result,wei,tmpweight);
+        update(result,wei,tmpweight,tmpweightT);
 		
 		for(int i=0;i<Doc.size();i++)
 		{
 			Doc.get(i).CalCos(sqrtt);
+			Tit.get(i).CalCos(sqrtt);
 		}
+
+        	for(int i=0;i<Tit.size();i++)
+        	{
+        		for(int j=0;j<Doc.size();j++)
+        		{
+        			if(Doc.get(j).id==Tit.get(i).id)
+        				{
+        				  Doc.get(j).cossin=Tit.get(i).cossin+Doc.get(j).cossin;
+        				  Tit.get(i).same=true;
+        				}
+        		}
+        	}
+        	
+        	for(int i=0;i<Tit.size();i++)
+        	{
+        		if(!Tit.get(i).same)
+        		{
+        			Doc.add(Tit.get(i));
+        		}
+        	}
+
 		Collections.sort(Doc, new CosComparator());
 	}
 	
-	public void update(Vector<String> result,Vector<Integer> wei,Vector<String> tmpweight) throws IOException
+	
+	
+	public void update(Vector<String> result,Vector<Integer> wei,Vector<String> tmpweight,Vector<String> tmpweightT) throws IOException
 	{
 	
 		for(int i=0;i<result.size();i++)
 		{
 			String value=tmpweight.get(i);
+			String valueT=tmpweightT.get(i);
 			if(!value.equals("0"))
 			{
 			String[] tokens=value.split(";");
@@ -146,6 +186,44 @@ public class SearchEngine
 	       	 }
        		 if(!DocID.contains(docID))
 	       	 Doc.add(dd);
+       		 else
+       		 {
+       		 UpdateDoc(dd); 
+       		 }
+	         }
+		}
+			if(!valueT.equals("0"))
+			{
+			String[] tokens=valueT.split(";");
+	         for(String token:tokens)
+	         {
+	       	 String[] tmp=token.split(",");
+	       	 boolean m=false;
+	       	 int docID=0;
+	       	 DocCom dd=new DocCom();
+	       	 dd.word.add(result.get(i));
+	       	 dd.wordw.add(wei.get(i));
+	       	 for(String t:tmp)
+	       	 {
+	       		 if(m==true)
+	       		 {
+	       		   dd.weight.add(Double.parseDouble(t));
+	       		 }
+	       		 
+	       		 if(m==false)
+	       		 {
+	       			 docID=Integer.parseInt(t);
+	       			 dd.id=Integer.parseInt(t);
+	       			 m=true;
+	       			 if(!DocID.contains(docID))
+	       			 {
+	       			 DocID.add(docID);
+	       			 }
+	       		 
+	       		 } 
+	       	 }
+       		 if(!DocID.contains(docID))
+	       	 Tit.add(dd);
        		 else
        		 {
        		 UpdateDoc(dd); 
