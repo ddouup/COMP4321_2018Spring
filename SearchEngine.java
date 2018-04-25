@@ -35,6 +35,29 @@ import java.util.StringTokenizer;
 	}
 
 }
+ 
+
+class PageList {
+	public String title;
+	public String url;
+	public String key;
+	public String datesizeofpage;
+	public String parentlink;
+	public String childlink;
+	public double score;
+	
+	PageList ()
+	{
+		 score=0;
+		 String title="";
+		 String url="";
+		 String key="";
+		 String datesizeofpage="";
+		 String parentlink="";
+		 String childlink="";
+	}
+
+}
 
 public class SearchEngine
 {	
@@ -237,15 +260,45 @@ public class SearchEngine
 		
 		for(int i=0;i<Doc.size();i++)
 		{   
+			if(i>50)
+				break;
 			PageList page=new PageList();
 			page.url=launcher.Id_Url_index.getEntry(String.valueOf(Doc.get(i).id));
 			page.title=launcher.Id_Title_index.getEntry(String.valueOf(Doc.get(i).id));
-			page.key=launcher.Docid_Key_index.getEntry(String.valueOf(Doc.get(i).id));
-			page.childlink=launcher.ChildLink_index.getEntry(String.valueOf(Doc.get(i).id));
-			page.parentlink=launcher.ParentLink_index.getEntry(String.valueOf(Doc.get(i).id));
+			String tmp=launcher.Docid_SortKey_index.getEntry(String.valueOf(Doc.get(i).id));
+			String []tokens=tmp.split(";");
+			int j=0;
+			for(String token:tokens)
+			{
+				tmp=tmp+token+";";
+				j++;
+				if(j>4)
+				break;
+			}
+			page.key=tmp;
+			tmp=launcher.ChildLink_index.getEntry(String.valueOf(Doc.get(i).id));
+			tokens=tmp.split(";");
+			for(String token:tokens)
+			{
+				String url="";
+				url=launcher.Id_Url_index.getEntry(token);
+				tmp=tmp+url+"\n";
+			}
+			page.childlink=tmp;
+			tmp=launcher.ParentLink_index.getEntry(String.valueOf(Doc.get(i).id));
+			tokens=tmp.split(";");
+			for(String token:tokens)
+			{
+				String url="";
+				url=launcher.Id_Url_index.getEntry(token);
+				tmp=tmp+url+"\n";
+			}
+			page.parentlink=tmp;
 			page.datesizeofpage=launcher.Id_LastModified_index.getEntry(String.valueOf(Doc.get(i).id))+","+launcher.Id_ContentLength_index.getEntry(String.valueOf(Doc.get(i).id));
+			page.score=Doc.get(i).cossin;
 			list.add(page);
 		}
+		
 		return list;
 	}
 }
