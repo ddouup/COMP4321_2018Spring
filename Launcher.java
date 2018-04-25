@@ -5,7 +5,7 @@ import java.io.IOException;
 
 public class Launcher
 {	
-	private static int Required_Number = 1000;
+	private static int Required_Number = 652;
 	private static int count_url;
 	private static int count_term;
 	public  static InvertedIndex Constructor;
