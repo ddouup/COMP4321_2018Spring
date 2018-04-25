@@ -5,6 +5,7 @@ import org.htmlparser.util.ParserException;
 import jdbm.helper.FastIterator;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 
 public class DataProcess
 {	
@@ -76,10 +77,9 @@ public class DataProcess
 		return idf;
 	}
 	
-	public double TermWeightCalculate(String _key,String Word) throws IOException
+	public double TermWeightCalculate(int tf,String Word) throws IOException
 	{
         double a=0.0;
-		int tf=Returntf(_key,Word);
 		double idf=Returnidf(Word);
 		int tfmax=Returntfmax(Word);
 		a=(tf*idf)/tfmax;
@@ -93,6 +93,7 @@ public class DataProcess
          String Content="";
          String word="";
         double score=0.0;
+        DecimalFormat df = new DecimalFormat( "0.0000 ");  
  		for(int i = 1; i < launcher.getRequiredNumber(); i++)		
  		{
  	        Content=launcher.Docid_Key_index.getEntry(Integer.toString(i));
@@ -103,20 +104,24 @@ public class DataProcess
  	          {
  	        	 String[] tmp=token.split(":");
  	        	 boolean m=false;
+ 	             int tf=0;
  	        	 for(String t:tmp)
  	        	 {
- 	        		 if(m=false)
+ 	        		 if(m==true)
+ 	        		 {
+ 	        		   tf=Integer.parseInt(t);
+ 	        		 }
+ 	        		 if(m==false)
+ 	        		 {
  	        		 word=t;
  	        		 m=true;
- 	        		 
+ 	        		 } 
  	        	 }
+ 	 			score=Data.TermWeightCalculate(tf,word);
+ 	 			String value=String.valueOf(i)+","+String.valueOf(df.format(score));
+ 	 			launcher.Key_Weight_index.addEntry(word, value); 
  	          }
  	        }
- 	        
- 			word=Key.get(i);
- 			score=Data.TermWeightCalculate(Integer.toString(i),word);
- 			launcher.Key_Weight_index.delEntry(word);
- 			launcher.Key_Weight_index.addEntry(word, String.valueOf(score));		
  		}
 		launcher.Constructor.finalization();
  		System.out.print("Done");
