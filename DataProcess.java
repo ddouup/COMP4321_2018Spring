@@ -69,11 +69,16 @@ public class DataProcess
 	public double Returnidf(String Word) throws IOException
 	{
 		int a=0;
+		double idf = 0;
 		String value="";
 		value=launcher.Key_Docid_index.getEntry(Word);
-        String[] tokens=value.split(";");
-        a=tokens.length;
-        double idf=Math.log(launcher.getRequiredNumber()/a)/Math.log(2);
+		System.out.println(Word+": "+value);
+		if(value!=null)
+		{
+	        String[] tokens=value.split(";");
+	        a=tokens.length;
+	        idf=Math.log(launcher.getRequiredNumber()/a)/Math.log(2);
+		}
 		return idf;
 	}
 	
