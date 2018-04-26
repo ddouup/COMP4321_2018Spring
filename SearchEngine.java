@@ -65,6 +65,7 @@ public class SearchEngine
 {	
 	public static Launcher launcher;
 	public static Vector<Integer> DocID;
+	public static Vector<Integer> TitID;
 	public static Vector<DocCom> Doc;
 	public static Vector<DocCom> Tit;
 	public static Vector<Integer> wei;
@@ -74,6 +75,7 @@ public class SearchEngine
 	{
 		launcher=new Launcher();
 		DocID=new Vector<Integer>();
+		TitID=new Vector<Integer>();
 		Doc=new Vector<DocCom>();
 		wei=new Vector<Integer>();
 		sqrtt=0.0;
@@ -83,7 +85,7 @@ public class SearchEngine
         public int compare(Object obj1, Object obj2) { 
              DocCom D1=(DocCom)obj1;
              DocCom D2=(DocCom)obj2;
-            return new Double(D1.cossin).compareTo(new Double(D2.cossin));  
+            return new Double(D2.cossin).compareTo(new Double(D1.cossin));  
         }  
     }  
 	
@@ -94,6 +96,7 @@ public class SearchEngine
 		
 		for(int i=0;i<result.size();i++)
 		{
+			System.out.println(result.get(i));
 			String tmp=launcher.Key_Weight_index.getEntry(result.get(i));
 			String tmpT=launcher.TitlePhrase_Weight_index.getEntry(result.get(i));
 			if(tmp==null)
@@ -102,7 +105,8 @@ public class SearchEngine
 			}
 			else
 			{
-			tmpweight.add(tmp);
+				System.out.println(tmp);
+				tmpweight.add(tmp);
 			}
 			if(tmpT==null)
 			{
@@ -110,7 +114,7 @@ public class SearchEngine
 			}
 			else
 			{
-			tmpweightT.add(tmpT);
+				tmpweightT.add(tmpT);
 			}
 			
 		}
@@ -120,9 +124,10 @@ public class SearchEngine
 		for(int i=0;i<Doc.size();i++)
 		{
 			Doc.get(i).CalCos(sqrtt);
-			Tit.get(i).CalCos(sqrtt);
+			//System.out.println(Doc.get(i).cossin);
+			//Tit.get(i).CalCos(sqrtt);
 		}
-
+		/*
         	for(int i=0;i<Tit.size();i++)
         	{
         		for(int j=0;j<Doc.size();j++)
@@ -141,7 +146,7 @@ public class SearchEngine
         		{
         			Doc.add(Tit.get(i));
         		}
-        	}
+        	}*/
 
 		Collections.sort(Doc, new CosComparator());
 	}
@@ -157,79 +162,53 @@ public class SearchEngine
 			String valueT=tmpweightT.get(i);
 			if(!value.equals("0"))
 			{
-			String[] tokens=value.split(";");
-	         for(String token:tokens)
-	         {
-	       	 String[] tmp=token.split(",");
-	       	 boolean m=false;
-	       	 int docID=0;
-	       	 DocCom dd=new DocCom();
-	       	 dd.word.add(result.get(i));
-	       	 dd.wordw.add(wei.get(i));
-	       	 for(String t:tmp)
-	       	 {
-	       		 if(m==true)
-	       		 {
-	       		   dd.weight.add(Double.parseDouble(t));
-	       		 }
-	       		 if(m==false)
-	       		 {
-	       		 docID=Integer.parseInt(t);
-	       		 dd.id=Integer.parseInt(t);
-	       		 m=true;
-	       		 if(!DocID.contains(docID))
-	       		 {
-	       			 DocID.add(docID);
-	       		 }
-	       		 }
-	       		  
-	       	 }
-       		 if(!DocID.contains(docID))
-	       	 Doc.add(dd);
-       		 else
-       		 {
-       		 UpdateDoc(dd); 
-       		 }
-	         }
-		}
+				String[] tokens=value.split(";");
+		         for(String token:tokens)
+		         {
+			       	 String[] tmp=token.split(",");
+			       	 int docID=0;
+			       	 DocCom dd=new DocCom();
+			       	 dd.word.add(result.get(i));
+			       	 dd.wordw.add(wei.get(i));
+			       	 
+			       	docID=Integer.parseInt(tmp[0]);
+		       		dd.id=Integer.parseInt(tmp[0]);
+		       		dd.weight.add(Double.parseDouble(tmp[1]));
+		       		
+		       		if(!DocID.contains(docID))
+		       		{
+		       			DocID.add(docID);
+		       			Doc.add(dd);
+		       		}
+		       		 else
+		       			 UpdateDoc(dd); 
+		         }
+			}/*
 			if(!valueT.equals("0"))
 			{
-			String[] tokens=valueT.split(";");
-	         for(String token:tokens)
-	         {
-	       	 String[] tmp=token.split(",");
-	       	 boolean m=false;
-	       	 int docID=0;
-	       	 DocCom dd=new DocCom();
-	       	 dd.word.add(result.get(i));
-	       	 dd.wordw.add(wei.get(i));
-	       	 for(String t:tmp)
-	       	 {
-	       		 if(m==true)
-	       		 {
-	       		   dd.weight.add(Double.parseDouble(t));
-	       		 }
-	       		 
-	       		 if(m==false)
-	       		 {
-	       			 docID=Integer.parseInt(t);
-	       			 dd.id=Integer.parseInt(t);
-	       			 m=true;
-	       			 if(!DocID.contains(docID))
+				String[] tokens=valueT.split(";");
+		        for(String token:tokens)
+		        {
+			       	 String[] tmp=token.split(",");
+			       	 boolean m=false;
+			       	 int titID=0;
+			       	 DocCom dd=new DocCom();
+			       	 dd.word.add(result.get(i));
+			       	 dd.wordw.add(wei.get(i));
+			       	
+	       			titID=Integer.parseInt(tmp[0]);
+	       			 dd.id=Integer.parseInt(tmp[0]);
+		       		dd.weight.add(Double.parseDouble(tmp[1]));
+	       			 if(!TitID.contains(titID))
 	       			 {
-	       			 DocID.add(docID);
+	       				TitID.add(titID);
+	       				System.out.println("Title ID: "+titID);
+			        	Tit.add(dd);
 	       			 }
-	       		 
-	       		 } 
-	       	 }
-       		 if(!DocID.contains(docID))
-	       	 Tit.add(dd);
-       		 else
-       		 {
-       		 UpdateDoc(dd); 
-       		 }
-	         }
-		}
+			       	else
+			       		UpdateDoc(dd);
+			    }
+			}*/
 		}
 	}
 	
@@ -301,27 +280,41 @@ public class SearchEngine
 		return result;
     }
     
-    public void updateterwei(Vector<String> result)
+    public Vector<String> updateterwei(Vector<String> result)
     {
-    	
+    	Vector<String> new_result = new Vector<String>();
 		Collections.sort(result);
+		System.out.println(result);
 		String k="";
 		int wordcount=0;
 		if(result.size()!=0)								
 		{
-		k=result.get(wordcount);
-		for (int g = 0; g < result.size(); g++)
-		{
-			if(!k.equals(result.get(g)))
+			k=result.get(wordcount);
+			new_result.add(k);
+			System.out.println("Word: "+k);
+			for (int g = 0; g < result.size(); g++)
 			{
-			wordcount=g-wordcount;
-			wei.add(wordcount);
-			sqrtt=sqrtt+wordcount;
-			k=result.get(g);
-			wordcount=g;
+				if(!k.equals(result.get(g)))
+				{
+					wordcount=g-wordcount;
+					System.out.println("Weight: "+wordcount);
+					wei.add(wordcount);
+					sqrtt=sqrtt+wordcount;
+					k=result.get(g);
+					wordcount=g;
+					new_result.add(k);
+					System.out.println("Word: "+k);
+				}
+				if(g == result.size()-1)
+				{
+					wordcount=g-wordcount+1;
+					System.out.println("Weight: "+wordcount);
+					wei.add(wordcount);
+					sqrtt=sqrtt+wordcount;
+				}
 			}
 		}
-		}
+		return new_result;
     }
     
     
@@ -332,51 +325,77 @@ public class SearchEngine
 		Vector<PageList> list= new Vector<PageList>();
 		Vector<String> result=new Vector<String>();
         result=queryprocess(query);
-        updateterwei(result);
+        result=updateterwei(result);
 		
 		Sort(result,wei);
 		
 		for(int i=0;i<Doc.size();i++)
 		{   
-			if(i>50)
+			if(i>20)
 				break;
 			PageList page=new PageList();
 			page.url=launcher.Id_Url_index.getEntry(String.valueOf(Doc.get(i).id));
 			page.title=launcher.Id_Title_index.getEntry(String.valueOf(Doc.get(i).id));
 			String tmp=launcher.Docid_SortKey_index.getEntry(String.valueOf(Doc.get(i).id));
-			String []tokens=tmp.split(";");
-			int j=0;
-			for(String token:tokens)
+			if(tmp!=null)
 			{
-				tmp=tmp+token+";";
-				j++;
-				if(j>4)
-				break;
+				String []tokens=tmp.split(";");
+				int j=0;
+				for(String token:tokens)
+				{
+					tmp=tmp+token+";";
+					j++;
+					if(j>4)
+					break;
+				}
+				page.key=tmp;
 			}
-			page.key=tmp;
 			tmp=launcher.ChildLink_index.getEntry(String.valueOf(Doc.get(i).id));
-			tokens=tmp.split(";");
-			for(String token:tokens)
+			if(tmp!=null)
 			{
-				String url="";
-				url=launcher.Id_Url_index.getEntry(token);
-				tmp=tmp+url+"\n";
+				String []tokens=tmp.split(";");
+				for(String token:tokens)
+				{
+					String url="";
+					url=launcher.Id_Url_index.getEntry(token);
+					tmp=tmp+url+"\n";
+				}
+				page.childlink=tmp;
 			}
-			page.childlink=tmp;
 			tmp=launcher.ParentLink_index.getEntry(String.valueOf(Doc.get(i).id));
-			tokens=tmp.split(";");
-			for(String token:tokens)
+			if(tmp!=null)
 			{
-				String url="";
-				url=launcher.Id_Url_index.getEntry(token);
-				tmp=tmp+url+"\n";
+				String[] tokens=tmp.split(";");
+				for(String token:tokens)
+				{
+					String url="";
+					url=launcher.Id_Url_index.getEntry(token);
+					tmp=tmp+url+"\n";
+				}
+				page.parentlink=tmp;
 			}
-			page.parentlink=tmp;
 			page.datesizeofpage=launcher.Id_LastModified_index.getEntry(String.valueOf(Doc.get(i).id))+","+launcher.Id_ContentLength_index.getEntry(String.valueOf(Doc.get(i).id));
 			page.score=Doc.get(i).cossin;
 			list.add(page);
 		}
 		
 		return list;
+	}
+	
+	public static void main (String[] args) throws IOException
+	{
+		SearchEngine searchEngine = new SearchEngine();
+		Vector<PageList> result = searchEngine.search("hkust");
+		for(int i = 0; i < result.size(); i++)
+		{	
+			System.out.println("Score: "+result.get(i).score);
+			System.out.println(result.get(i).title);
+			//System.out.println(result.get(i).url);
+			//System.out.println(result.get(i).key);
+			//System.out.println(result.get(i).datesizeofpage);
+			//System.out.println("P_link: "+result.get(i).parentlink);
+			//System.out.println("C_link: "+result.get(i).childlink);
+			//System.out.println("");
+		}
 	}
 }

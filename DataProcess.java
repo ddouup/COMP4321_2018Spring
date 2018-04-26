@@ -1,7 +1,9 @@
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Vector;
 import org.htmlparser.util.ParserException;
 
+import java.util.Comparator;
 import jdbm.helper.FastIterator;
 
 import java.io.IOException;
@@ -24,55 +26,50 @@ public class DataProcess
 		int a=0;
 		String value="";
 		value=launcher.Docid_Key_index.getEntry(_key);
-		if (!(value==null))
+		if (value!=null)
 		{
-        String[] tokens=value.split(";");
-        int i=0;
-        for(String token:tokens)
-        {
-        	String[]tmp=token.split(":");
-        	boolean m=false;
-        	for(String t:tmp)
-        	{
-        	if(m)
-        	{
-        		try 
-        		{
-        		a = Integer.parseInt(t);
-        		} 
-        		catch (NumberFormatException e)
-        		{
-        		    e.printStackTrace();
-        		}
-        		return a;
-        	}
-        	if(t.equals(word))
-        	{
-        	  m=true;	
-        	}
-        	}
-        }
+	        String[] tokens=value.split(";");
+	        int i=0;
+	        for(String token:tokens)
+	        {
+	        	String[] tmp=token.split(":");
+	        	if (tmp[0].equals(word))
+	        	{
+	        		try 
+	        		{
+	        			a = Integer.parseInt(tmp[1]);
+	        		} 
+	        		catch (NumberFormatException e)
+	        		{
+	        		    e.printStackTrace();
+	        		}
+	        		return a;
+	        	}
+	        }
 		}
 		return a;
 	}
 	
-	public int Returntfmax(String Word) throws IOException
+	public int Returntfmax(String id, boolean title) throws IOException
 	{
-		int a=0;
-		for(int i=1;i<launcher.getRequiredNumber();i++)
-		{
-		a=a+Returntf(Integer.toString(i),Word);
-		}
-		return a;
+		String value = "";
+		if(title)
+			value = launcher.TitleId_SortKey_index.getEntry(id);
+		else
+			value = launcher.Docid_SortKey_index.getEntry(id);
+		return Integer.parseInt(value.split(";")[0].split(":")[1]);
 	}
 	
-	public double Returnidf(String Word) throws IOException
+	public double Returnidf(String Word, boolean title) throws IOException
 	{
 		int a=0;
 		double idf = 0;
 		String value="";
-		value=launcher.Key_Docid_index.getEntry(Word);
-		System.out.println(Word+": "+value);
+		if(title)
+			value=launcher.Key_TitleId_index.getEntry(Word);
+		else
+			value=launcher.Key_Docid_index.getEntry(Word);
+		System.out.println(value);
 		if(value!=null)
 		{
 	        String[] tokens=value.split(";");
@@ -82,28 +79,74 @@ public class DataProcess
 		return idf;
 	}
 	
-	public double TermWeightCalculate(int tf,String Word) throws IOException
+	public double TermWeightCalculate(int id, int tf, String Word, boolean title) throws IOException
 	{
         double a=0.0;
-		double idf=Returnidf(Word);
-		int tfmax=Returntfmax(Word);
+		double idf=Returnidf(Word,title);
+		int tfmax=Returntfmax(Integer.toString(id),title);
 		a=(tf*idf)/tfmax;
 		return a;	
 	}
 	
+    static class KeyComparator implements Comparator {  
+        public int compare(Object obj1, Object obj2) { 
+             String key1=(String)obj1;
+             String key2=(String)obj2;
+             Integer k2 = Integer.parseInt(key2.split(":")[1]);
+             Integer k1 =Integer.parseInt(key1.split(":")[1]); 
+            return k2.compareTo(k1);  
+        }  
+    } 
+    public static void sortKey(boolean title) throws IOException
+    {
+    	for (int i = 1; i <= launcher.getRequiredNumber(); i++)
+		{	
+			Vector<String> keys = new Vector<String>();
+			String result="";
+			System.out.println(i);
+			String value = "";
+			if(title)
+				value = launcher.TitleId_Key_index.getEntry(Integer.toString(i));
+			else
+				value = launcher.Docid_Key_index.getEntry(Integer.toString(i));
+			if (value!=null)
+			{
+				String[] tokens = value.split(";");
+				for(String token:tokens)
+				{
+					keys.add(token);
+				}
+				Collections.sort(keys, new KeyComparator());
+				for(int j = 0; j < keys.size(); j++)
+					result = result+keys.get(j)+";";
+			}
+			System.out.println(result);
+			if(title)
+				launcher.TitleId_SortKey_index.addEntry(Integer.toString(i), result);
+			else
+				launcher.Docid_SortKey_index.addEntry(Integer.toString(i), result);
+		}
+    }
+    
 	public static void main (String[] args) throws IOException, ParserException
 	{	
-		 DataProcess Data=new DataProcess();
-         Vector<String> Key=new Vector<String>();
-         String Content="";
-         String word="";
+
+		DataProcess Data=new DataProcess();
+		
+		sortKey(true);
+		sortKey(false);
+		
+        Vector<String> Key=new Vector<String>();
+        String Content="";
+        String word="";
         double score=0.0;
-        DecimalFormat df = new DecimalFormat( "0.0000 ");  
- 		for(int i = 1; i < launcher.getRequiredNumber(); i++)		
+        DecimalFormat df = new DecimalFormat( "0.00000000");  
+ 		for(int i = 1; i <= launcher.getRequiredNumber(); i++)		
  		{
  	        Content=launcher.Docid_Key_index.getEntry(Integer.toString(i));
- 	        if(Content!=null)
+ 	        if(Content!=null && !Content.equals(""))
  	        {
+ 	        	System.out.println("Keys in doc "+i+": "+Content);
  	          String[] tokens=Content.split(";");
  	          for(String token:tokens)
  	          {
@@ -122,18 +165,20 @@ public class DataProcess
  	        		 m=true;
  	        		 } 
  	        	 }
- 	 			score=Data.TermWeightCalculate(tf,word);
+ 	        	 System.out.println("Word: "+word);
+ 	 			score=Data.TermWeightCalculate(i,tf,word,false);
  	 			String value=String.valueOf(i)+","+String.valueOf(df.format(score));
  	 			launcher.Key_Weight_index.addEntry(word, value); 
  	          }
  	        }
  		}
  		
- 		for(int i = 1; i < launcher.getRequiredNumber(); i++)		
+ 		for(int i = 1; i <= launcher.getRequiredNumber(); i++)		
  		{
  	        Content=launcher.TitleId_Key_index.getEntry(Integer.toString(i));
- 	        if(Content!=null)
+ 	        if(Content!=null && !Content.equals(""))
  	        {
+ 	        	System.out.println("Keys in doc "+i+"title: "+Content);
  	          String[] tokens=Content.split(";");
  	          for(String token:tokens)
  	          {
@@ -152,7 +197,8 @@ public class DataProcess
  	        		 m=true;
  	        		 } 
  	        	 }
- 	 			score=Data.TermWeightCalculate(tf,word);
+ 	        	System.out.println("Word: "+word);
+ 	 			score=Data.TermWeightCalculate(i,tf,word,true);
  	 			String value=String.valueOf(i)+","+String.valueOf(df.format(score));
  	 			launcher.TitlePhrase_Weight_index.addEntry(word, value); 
  	          }

@@ -6,7 +6,7 @@ import java.io.IOException;
 
 public class Launcher
 {	
-	private static int Required_Number = 652;
+	private static int Required_Number = 1000;
 	private static int count_url;
 	public  static InvertedIndex Constructor;
 	public	static InvertedIndex Id_Url_index;
@@ -24,9 +24,7 @@ public class Launcher
 	public	static InvertedIndex Key_Weight_index;
 	public  static InvertedIndex TitlePhrase_Weight_index;
 	public	static InvertedIndex Docid_SortKey_index;
-	
-
-
+	public	static InvertedIndex TitleId_SortKey_index;
 
 	Launcher() throws IOException
 	{	
@@ -46,7 +44,7 @@ public class Launcher
 		Key_Weight_index =new InvertedIndex("project","key_weight");
 		TitlePhrase_Weight_index = new InvertedIndex("project","titlephrase_weight");
 		Docid_SortKey_index = new InvertedIndex("project","docid_sortkey");
-
+		TitleId_SortKey_index = new InvertedIndex("project","titleid_sortkey");
 	}
 	
 	public int getRequiredNumber() throws IOException
