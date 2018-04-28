@@ -1,4 +1,4 @@
-<%@ page language="java" import="java.util.*, StopStem, SearchEngine" %>
+<%@page language="java" import="java.util.*,SE.SearchEngine" %>
 <html>
 <head>
 <title>Search</title>
@@ -20,7 +20,7 @@
 			<h1><a href="index.html">Search Engine</a></h1>
 			<div class="clearfix"></div>
 		 </div>
-		 <div class="top_right">
+		 	<div class="top_right">
 			      <ul class="nav1">
 		            <li id="search">
 						<form action="" method="get">
@@ -29,7 +29,7 @@
 						</form>
 					</li>
 	              </ul>
-	     </div>
+	     	</div>
 		 <div class="clearfix"></div>
 		</div>
 	</div>
@@ -37,31 +37,25 @@
 		<div class="container">
 			<%--Get request parameter--%>
 			<%
-			if(request.getParameter("txtname")!=null)
+			String query = request.getParameter("search_text");
+			if(query!=null)
 			{	
-				out.println("You input "+request.getParameter("txtname"));
-				StopStem stopStem = new StopStem("stopwords.txt");
-				Vector<String> query = new Vector<String>();
-				String contents = request.getParameter("txtname")
-				StringTokenizer st = new StringTokenizer(contents);
-				while (st.hasMoreTokens()) {
-					String word = st.nextToken();
-					if (!stopStem.isStopWord(word)){
-						word = stopStem.stem(word);
-						out.println(word);
-						boolean isWord=word.matches("^[A-Za-z0-9]+");
-						if(isWord)
-						query.add(word);
-					}
+				out.println("You input: "+query);
+				
+				SearchEngine SE = new SearchEngine();
+				
+				Vector<PageList> result = SE.search(query);
+				for(int i = 0; i < result.size(); i++)
+				{	
+					out.println("Score: "+result.get(i).score);
+					out.println(result.get(i).title);
+					out.println(result.get(i).url);
+					out.println(result.get(i).key);
+					out.println(result.get(i).datesizeofpage);
+					out.println("P_link: "+result.get(i).parentlink);
+					out.println("C_link: "+result.get(i).childlink);
+					//System.out.println("");
 				}
-				SearchEngine searchEngine = new SearchEngine();
-				// TODO: search and print result
-				/*
-				Vector<> result = searchEngine.search(query);
-				for (int i = 1; i < result.size(); i++){
-					
-				}
-				*/
 			}
 			else
 			{
