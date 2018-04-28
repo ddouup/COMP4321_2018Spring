@@ -62,7 +62,7 @@ public class DataProcess
 	
 	public double Returnidf(String Word, boolean title) throws IOException
 	{
-		int a=0;
+		double a = 0;
 		double idf = 0;
 		String value="";
 		if(title)
@@ -74,6 +74,7 @@ public class DataProcess
 		{
 	        String[] tokens=value.split(";");
 	        a=tokens.length;
+	        System.out.println("length: "+a);
 	        idf=Math.log(launcher.getRequiredNumber()/a)/Math.log(2);
 		}
 		return idf;
@@ -84,6 +85,10 @@ public class DataProcess
         double a=0.0;
 		double idf=Returnidf(Word,title);
 		int tfmax=Returntfmax(Integer.toString(id),title);
+		if(idf == 0) {
+			System.out.println(Word+"'s idf is 0");
+			System.exit(0);
+		}
 		a=(tf*idf)/tfmax;
 		return a;	
 	}
@@ -140,7 +145,7 @@ public class DataProcess
         String Content="";
         String word="";
         double score=0.0;
-        DecimalFormat df = new DecimalFormat( "0.00000000");  
+        DecimalFormat df = new DecimalFormat( "0.000000");  
  		for(int i = 1; i <= launcher.getRequiredNumber(); i++)		
  		{
  	        Content=launcher.Docid_Key_index.getEntry(Integer.toString(i));
@@ -168,6 +173,7 @@ public class DataProcess
  	        	 System.out.println("Word: "+word);
  	 			score=Data.TermWeightCalculate(i,tf,word,false);
  	 			String value=String.valueOf(i)+","+String.valueOf(df.format(score));
+ 	 			//String value=String.valueOf(i)+","+score;
  	 			launcher.Key_Weight_index.addEntry(word, value); 
  	          }
  	        }
@@ -199,7 +205,8 @@ public class DataProcess
  	        	 }
  	        	System.out.println("Word: "+word);
  	 			score=Data.TermWeightCalculate(i,tf,word,true);
- 	 			String value=String.valueOf(i)+","+String.valueOf(df.format(score));
+ 	 			//String value=String.valueOf(i)+","+String.valueOf(df.format(score));
+ 	 			String value=String.valueOf(i)+","+score;
  	 			launcher.TitlePhrase_Weight_index.addEntry(word, value); 
  	          }
  	        }

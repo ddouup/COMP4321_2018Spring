@@ -65,10 +65,10 @@ public class PRINTOUT
 				//TitlePhrase_Weight_index.printAll();
 				//Docid_SortKey_index.printAll();
 				//TitleId_SortKey_index.printAll();
-                /*System.out.println(Key_Docid_index.getEntry("research"));
-                System.out.println(Key_Weight_index.getEntry("research"));
-                System.out.println(Key_Docid_index.getEntry("hkust"));
-                System.out.println(Key_Weight_index.getEntry("hkust"));*/
+                /*System.out.println(Key_Docid_index.getEntry("hkust"));
+                System.out.println(Key_Weight_index.getEntry("hkust"));
+                System.out.println(Key_Docid_index.getEntry("pointer"));
+                System.out.println(Key_Weight_index.getEntry("pointer"));*/
 				Constructor.finalization();		
 			}
 			catch(IOException ex)

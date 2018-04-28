@@ -96,7 +96,7 @@ public class SearchEngine
 		
 		for(int i=0;i<result.size();i++)
 		{
-			System.out.println(result.get(i));
+			System.out.println("Word: "+result.get(i));
 			String tmp=launcher.Key_Weight_index.getEntry(result.get(i));
 			String tmpT=launcher.TitlePhrase_Weight_index.getEntry(result.get(i));
 			if(tmp==null)
@@ -105,7 +105,7 @@ public class SearchEngine
 			}
 			else
 			{
-				System.out.println(tmp);
+				System.out.println("Key weight: "+tmp);
 				tmpweight.add(tmp);
 			}
 			if(tmpT==null)
@@ -331,7 +331,7 @@ public class SearchEngine
 		
 		for(int i=0;i<Doc.size();i++)
 		{   
-			if(i>20)
+			if(i>50)
 				break;
 			PageList page=new PageList();
 			page.url=launcher.Id_Url_index.getEntry(String.valueOf(Doc.get(i).id));
@@ -385,16 +385,16 @@ public class SearchEngine
 	public static void main (String[] args) throws IOException
 	{
 		SearchEngine searchEngine = new SearchEngine();
-		Vector<PageList> result = searchEngine.search("hkust");
+		Vector<PageList> result = searchEngine.search("alumni hkust hkust");
 		for(int i = 0; i < result.size(); i++)
 		{	
 			System.out.println("Score: "+result.get(i).score);
 			System.out.println(result.get(i).title);
-			//System.out.println(result.get(i).url);
-			//System.out.println(result.get(i).key);
-			//System.out.println(result.get(i).datesizeofpage);
-			//System.out.println("P_link: "+result.get(i).parentlink);
-			//System.out.println("C_link: "+result.get(i).childlink);
+			System.out.println(result.get(i).url);
+			System.out.println(result.get(i).key);
+			System.out.println(result.get(i).datesizeofpage);
+			System.out.println("P_link: "+result.get(i).parentlink);
+			System.out.println("C_link: "+result.get(i).childlink);
 			//System.out.println("");
 		}
 	}
