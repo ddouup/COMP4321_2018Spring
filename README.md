@@ -6,7 +6,7 @@ YANG, Mingyuan   (myangah@connect.ust.hk) <br>
 ## File Structure
 Replace ROOT on Tomcat by this one. <br>
 Put all .class file in WEB-INF/classes <br>
-Put all .jar file in WEB-INF/classes <br>
+Put all .jar file in WEB-INF/lib <br>
 Put .jsp files in pages/ <br>
 ## Crawler
 compile:
