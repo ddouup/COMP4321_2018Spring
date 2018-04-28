@@ -1,4 +1,4 @@
-<%@page language="java" import="java.util.*,SE.SearchEngine" %>
+<%@page language="java" import="java.util.*,searchEngine.SearchEngine" %>
 <html>
 <head>
 <title>Search</title>
