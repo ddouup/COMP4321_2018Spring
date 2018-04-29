@@ -25,6 +25,7 @@ public class Launcher
 	public  static InvertedIndex TitlePhrase_Weight_index;
 	public	static InvertedIndex Docid_SortKey_index;
 	public	static InvertedIndex TitleId_SortKey_index;
+	public	static InvertedIndex Docid_KeyPos_index;
 
 	Launcher() throws IOException
 	{	
@@ -45,6 +46,7 @@ public class Launcher
 		TitlePhrase_Weight_index = new InvertedIndex("project","titlephrase_weight");
 		Docid_SortKey_index = new InvertedIndex("project","docid_sortkey");
 		TitleId_SortKey_index = new InvertedIndex("project","titleid_sortkey");
+		Docid_KeyPos_index = new InvertedIndex("project","docid_keypos"); //stored words with position, used for phrase search
 	}
 	
 	public int getRequiredNumber() throws IOException
@@ -100,35 +102,6 @@ public class Launcher
 		Vector<String> titlewords=null;
 		try {
 			titlewords = Stop_Stem(title);
-		} catch (ParserException e) {
-			e.printStackTrace();
-		}
-		Collections.sort(titlewords);
-		String k="";
-		if(titlewords.size()!=0)								
-			k=titlewords.get(wordcount);
-		else
-			TitleId_Key_index.addEntry(Integer.toString(current_id),"");
-		for (int g = 0; g < titlewords.size(); g++){
-			if(!k.equals(titlewords.get(g)))
-			{
-				wordcount=g-wordcount;
-				String tmp=Integer.toString(wordcount);
-				TitleId_Key_index.addEntry(Integer.toString(current_id),k+":"+tmp);
-				Key_TitleId_index.addEntry(k,Integer.toString(current_id));
-				wordcount=g;
-				k=titlewords.get(g);
-			}
-		}
-		titlewords.clear();
-	}
-	
-	public void addTitleterm(Crawler crawler, int current_id) throws IOException
-	{
-		int wordcount=0;
-		Vector<String> titlewords=null;
-		try {
-			titlewords = crawler.extractTitleKey();
 		} catch (ParserException e) {
 			e.printStackTrace();
 		}
@@ -235,38 +208,7 @@ public class Launcher
 		}
 		titlewords.clear();
 	}
-	
-	public void updateTitleterm(Crawler crawler, String current_id) throws IOException
-	{
-		//TitleId_Key_index.delValue(current_id);
-		//Key_TitleId_index.updateKey(current_id);
-		int wordcount=0;
-		Vector<String> titlewords=null;
-		try {
-			titlewords = crawler.extractTitleKey();
-		} catch (ParserException e) {
-			e.printStackTrace();
-		}
-		Collections.sort(titlewords);
-		String k="";
-		if(titlewords.size()!=0)								
-			k=titlewords.get(wordcount);
-		else
-			TitleId_Key_index.updateEntry(current_id,"");
-		for (int g = 0; g < titlewords.size(); g++){
-			if(!k.equals(titlewords.get(g)))
-			{
-				wordcount=g-wordcount;
-				String tmp=Integer.toString(wordcount);
-				TitleId_Key_index.updateEntry(current_id,k+":"+tmp);
-				Key_TitleId_index.updateEntry(k,current_id);
-				wordcount=g;
-				k=titlewords.get(g);
-			}
-		}
-		titlewords.clear();
-	}
-	
+		
 	public void updateContentterm(Crawler crawler, String current_id) throws IOException
 	{
 		//Docid_Key_index.delValue(current_id);

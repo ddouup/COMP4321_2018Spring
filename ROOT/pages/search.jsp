@@ -1,23 +1,24 @@
-<%@page language="java" import="java.util.*,searchEngine.SearchEngine" %>
+<%@page language="java" import="java.util.*" %>
+<%@ page import="searchEngine.HelloWorld" %>
 <html>
 <head>
 <title>Search</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<link href="css/bootstrap.css" rel='stylesheet' type='text/css' />
+<link href="../css/bootstrap.css" rel='stylesheet' type='text/css' />
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 <!-- Custom Theme files -->
-<link href="css/style.css" rel='stylesheet' type='text/css' />
+<link href="../css/style.css" rel='stylesheet' type='text/css' />
 <!-- Custom Theme files -->
 <!--webfont-->
-<script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
 </head>
 <body>
 	<br>
 	<div class="header">	
       <div class="container"> 
   	     <div class="logo">
-			<h1><a href="index.html">Search Engine</a></h1>
+			<h1><a href="../index.html">Search Engine</a></h1>
 			<div class="clearfix"></div>
 		 </div>
 		 	<div class="top_right">
@@ -39,23 +40,9 @@
 			<%
 			String query = request.getParameter("search_text");
 			if(query!=null)
-			{	
-				out.println("You input: "+query);
-				
-				SearchEngine SE = new SearchEngine();
-				
-				Vector<PageList> result = SE.search(query);
-				for(int i = 0; i < result.size(); i++)
-				{	
-					out.println("Score: "+result.get(i).score);
-					out.println(result.get(i).title);
-					out.println(result.get(i).url);
-					out.println(result.get(i).key);
-					out.println(result.get(i).datesizeofpage);
-					out.println("P_link: "+result.get(i).parentlink);
-					out.println("C_link: "+result.get(i).childlink);
-					//System.out.println("");
-				}
+			{
+				out.println("You input "+query);
+				HelloWorld h = new HelloWorld();
 			}
 			else
 			{

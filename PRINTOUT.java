@@ -22,7 +22,8 @@ public class PRINTOUT
 	public  static InvertedIndex TitlePhrase_Weight_index;
 	public	static InvertedIndex Docid_SortKey_index;
 	public	static InvertedIndex TitleId_SortKey_index;
-
+	public	static InvertedIndex Docid_KeyPos_index;
+	
 	PRINTOUT() throws IOException
 	{	
 		Constructor = new InvertedIndex("project");
@@ -42,6 +43,7 @@ public class PRINTOUT
 		TitlePhrase_Weight_index = new InvertedIndex("project","titlephrase_weight");
 		Docid_SortKey_index = new InvertedIndex("project","docid_sortkey");
 		TitleId_SortKey_index = new InvertedIndex("project","titleid_sortkey");
+		Docid_KeyPos_index = new InvertedIndex("project","docid_keypos");
 	}
 
 	public static void main (String[] args)
@@ -61,10 +63,11 @@ public class PRINTOUT
 				//TitleId_Key_index.printAll();
 				//Key_TitleId_index.printAll();
                 
-				Key_Weight_index.printAll();
+				//Key_Weight_index.printAll();
 				//TitlePhrase_Weight_index.printAll();
 				//Docid_SortKey_index.printAll();
 				//TitleId_SortKey_index.printAll();
+                Docid_KeyPos_index.printAll();
                 /*System.out.println(Key_Docid_index.getEntry("hkust"));
                 System.out.println(Key_Weight_index.getEntry("hkust"));
                 System.out.println(Key_Docid_index.getEntry("pointer"));
