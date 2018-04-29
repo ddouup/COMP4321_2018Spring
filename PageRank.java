@@ -8,63 +8,94 @@ import java.io.IOException;
 
 class Page
 {	
-	public Int Id;
-	public Vector<Page> ChildPages;
-	public Vector<Page> ParentPages;
-	public float output;
-	public float PR;
+	public String Id;
+	public Vector<String> ChildPages;
+	public Vector<String> ParentPages;
+	public double output;
+	public double PR;
 
 }
 
 public class PageRank
 {	
-	public static Launcher launcher;
+	private static InvertedIndex Constructor;
+	public	static InvertedIndex Id_Url_index;
+	public	static InvertedIndex ChildLink_index;
+	public	static InvertedIndex ParentLink_index;
+	public static InvertedIndex Id_PageRank_index;
 
 	PageRank() throws IOException
 	{	
-		launcher=new Launcher();
+		Constructor = new InvertedIndex("project");
+		Id_Url_index = new InvertedIndex("project","id_url");
+		ChildLink_index = new InvertedIndex("project","childlink");
+		ParentLink_index = new InvertedIndex("project","parentlink");
+		Id_PageRank_index = new InvertedIndex("project","pagerank");
 	}
 
-	public calculate1(Page page)
+	public static void calculate1(Page page)
 	{
 
 		page.output = page.PR/page.ChildPages.size();
+
 		
 	}
 
 	public static void main (String[] args) throws IOException, ParserException
 	{
-		Vector<String> linkIds = Launcher.Id_Url_index.ReturnKey();
+		PageRank pageRank = new PageRank();
+		Vector<String> linkIds = Id_Url_index.ReturnKey();
 		Vector<Page> linkPage = new Vector<Page>();
-		String[] childLinks = Launcher.ChildLink_index.getEntry(linkIds[i]).split(";");
-		String[] parentLinks = Launcher.ChildLink_index.getEntry(linkIds[i]).split(";");
 
 		
 		for (int i = 0; i < linkIds.size(); i++) {
-				//TODO: construct page objects
-			linkPage[i].Id = linkIds[i]
-			linkPage[i].ChildPages = childLinks;
-			linkPage[i].ParentPages = parentLinks;
-			linkPage[i].PR = 1;
+			System.out.println(linkIds.get(i+1));
+			String[] childLinks = ChildLink_index.getEntry(linkIds.get(i+1)).split(";");
+			String[] parentLinks = ParentLink_index.getEntry(linkIds.get(i+1)).split(";");
 
+			Page page = new Page();
+			Vector temp = new Vector();
+			System.out.println(linkIds.get(i+1));
+			page.Id = linkIds.get(i+1);
+			//linkPage.get(i).Id = linkIds.get(i);
+
+			//for (int k = 0; k < childLinks.length; k++){
+				//System.out.println(childLinks[k]);
+				//System.out.println(childLinks[k].getClass().getSimpleName());
+				//temp.addElement(childLinks[k]);
+				//page.ChildPages.addElement(childLinks[k]);
+			//}
+			//for (int k = 0; k < parentLinks.length; k++){
+				//page.ParentPages.addElement(parentLinks[k]);
+			//}
+			page.PR = 1;
+			linkPage.addElement(page);
 		}
-		int 
-		int d;
-		for (int i = 0; i < 20; i++){
-			for (int i = 0; i < linkPage.size(); i++){
-				calculate1(linkPage[i]);
+
+		double d = 0.5; //determined d value
+		int iteration_times = 1; //determined iteration times
+
+		for (int i = 0; i < iteration_times; i++){
+			for (int t = 0; t < linkPage.size(); t++){
+				calculate1(linkPage.get(t));
 			}
-			for (int i = 0; i < linkPage.size(); i++){
-				float j = new float;
-				for (string i : linkPage[i].ParentPages){
-					int k = int(i);
+			for (int t = 0; t < linkPage.size(); t++){
+				double j = 0;
+				for (String temp : linkPage.get(t).ParentPages){
+					int k = Integer.parseInt(temp);
 					j = j + k;
 				}
-				linkPage[i].PR = (1-d)+(d*j);
+				linkPage.get(t).PR = (1-d)+(d*j);
 			}
 		}
-
-
+		for (int i =0; i < linkIds.size();i++){
+			System.out.println(linkPage.get(i).Id);
+			System.out.println(linkPage.get(i).output);
+			System.out.println(linkPage.get(i).PR);
+		
+		}
+		
+		Constructor.finalization();
 	}
 
 }
