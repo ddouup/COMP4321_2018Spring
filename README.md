@@ -6,7 +6,8 @@ YANG, Mingyuan   (myangah@connect.ust.hk) <br>
 ## File Structure
 Replace ROOT on Tomcat by this one. <br>
 Put all .class file in WEB-INF/classes <br>
-Put .jsp files in WEB-INF/content <br>
+Put all .jar file in WEB-INF/lib <br>
+Put .jsp files in pages/ <br>
 ## Crawler
 compile:
 ```
@@ -18,6 +19,25 @@ run:
 ```
 java -cp lib/*:. Launcher
 ```
+## Data Process(sort and calculate weight)
+compile:
+```
+javac -cp .:lib/* DataProcess.java
+```
+run:
+```
+java -cp lib/*:. DataProcess
+```
+## Search(Interface used by the server)
+compile:
+```
+javac -cp .:lib/* SearchEngine.java
+```
+run:
+```
+java -cp lib/*:. SearchEngine
+```
+
 
 ## Test Program
 compile:
@@ -31,9 +51,11 @@ java -cp lib/*:. YmyTest
 
 ## TODO:
 ```
-1. Update Key_Docid_index to be -> Key: Word; Content: "Id,tf"
-2. Search
-3. Server
+1.Server
+2.Phrase search
+3.autocomplete
+4.pagerank
+5.others...
 
 ```
 

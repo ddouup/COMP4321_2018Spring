@@ -64,6 +64,15 @@ public class Crawler
 
 		return result;
 	}
+	
+	public String extractString() throws ParserException
+	{
+		StringBean bean = new StringBean();
+		bean.setURL(url);
+		bean.setLinks(false);
+		String contents = bean.getStrings();
+		return contents;
+	}
 
 	public Vector<String> extractLinks() throws ParserException
 	{
@@ -110,20 +119,15 @@ public class Crawler
 		{
 			URL obj = new URL(url);
 			URLConnection conn = obj.openConnection();
-			/*
-			Map<String, List<String>> map = conn.getHeaderFields();
-			System.out.println("Printing Response Header...\n");
-
-			for (Map.Entry<String, List<String>> entry : map.entrySet()) {
-				System.out.println(entry.getKey() + ": " + entry.getValue());
-			}
-			String result = "success";
-			*/
 			
 			long Content_Length = conn.getContentLengthLong();
 			System.out.println("Content_Length: " + Content_Length);
 
 			long Last_Modified = conn.getLastModified();
+			if (Last_Modified == 0)
+			{
+				Last_Modified = System.currentTimeMillis();
+			}
 			Date Last_Modified_Date = new Date(Last_Modified);
 			System.out.println("Last_Modified_Date: " + Last_Modified_Date);
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");

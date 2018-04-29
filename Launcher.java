@@ -1,4 +1,5 @@
 import java.util.Collections;
+import java.util.StringTokenizer;
 import java.util.Vector;
 import org.htmlparser.util.ParserException;
 import java.io.IOException;
@@ -7,7 +8,6 @@ public class Launcher
 {	
 	private static int Required_Number = 1000;
 	private static int count_url;
-	private static int count_term;
 	public  static InvertedIndex Constructor;
 	public	static InvertedIndex Id_Url_index;
 	public	static InvertedIndex Url_Id_index;
@@ -20,9 +20,11 @@ public class Launcher
 	public	static InvertedIndex Key_Docid_index;
 	public	static InvertedIndex TitleId_Key_index;
 	public	static InvertedIndex Key_TitleId_index;
+	
 	public	static InvertedIndex Key_Weight_index;
-
-
+	public  static InvertedIndex TitlePhrase_Weight_index;
+	public	static InvertedIndex Docid_SortKey_index;
+	public	static InvertedIndex TitleId_SortKey_index;
 
 	Launcher() throws IOException
 	{	
@@ -40,11 +42,31 @@ public class Launcher
 		Key_TitleId_index =new InvertedIndex("project","key_titleid");
 		//Newly added table
 		Key_Weight_index =new InvertedIndex("project","key_weight");
+		TitlePhrase_Weight_index = new InvertedIndex("project","titlephrase_weight");
+		Docid_SortKey_index = new InvertedIndex("project","docid_sortkey");
+		TitleId_SortKey_index = new InvertedIndex("project","titleid_sortkey");
 	}
 	
 	public int getRequiredNumber() throws IOException
 	{
 		return Required_Number;
+	}
+	
+	public Vector<String> Stop_Stem(String text) throws ParserException
+	{
+		StopStem stopStem = new StopStem("stopwords.txt");
+		Vector<String> result = new Vector<String>();
+		StringTokenizer st = new StringTokenizer(text);
+		while (st.hasMoreTokens()) {
+			String word = st.nextToken();
+			if (!stopStem.isStopWord(word)){
+				word = stopStem.stem(word);
+				boolean isWord=word.matches("^[A-Za-z0-9]+");
+				if(isWord)
+				result.add(word);
+			}
+		}
+		return result;
 	}
 	
 	public void addData(Crawler crawler, int current_id) throws IOException
@@ -62,13 +84,46 @@ public class Launcher
 		System.out.println("Id_Title_index added");
 		String[] info = crawler.extractPageInfo().split(";");
 		String content_length = info[0];
+		try {
+			if(Integer.parseInt(content_length)<1)
+				content_length = Integer.toString(crawler.extractString().length());
+		} catch (ParserException e) {
+			e.printStackTrace();
+		}
 		Id_ContentLength_index.addEntry(Integer.toString(current_id), content_length);
 		String last_modified = info[1];
 		Id_LastModified_index.addEntry(Integer.toString(current_id), last_modified);
 		System.out.println("Id_ContentLength_index and Id_LastModified_index_added");
+		
+		//Add title word
+		int wordcount=0;
+		Vector<String> titlewords=null;
+		try {
+			titlewords = Stop_Stem(title);
+		} catch (ParserException e) {
+			e.printStackTrace();
+		}
+		Collections.sort(titlewords);
+		String k="";
+		if(titlewords.size()!=0)								
+			k=titlewords.get(wordcount);
+		else
+			TitleId_Key_index.addEntry(Integer.toString(current_id),"");
+		for (int g = 0; g < titlewords.size(); g++){
+			if(!k.equals(titlewords.get(g)))
+			{
+				wordcount=g-wordcount;
+				String tmp=Integer.toString(wordcount);
+				TitleId_Key_index.addEntry(Integer.toString(current_id),k+":"+tmp);
+				Key_TitleId_index.addEntry(k,Integer.toString(current_id));
+				wordcount=g;
+				k=titlewords.get(g);
+			}
+		}
+		titlewords.clear();
 	}
 	
-	public void addTitleterm(Crawler crawler) throws IOException
+	public void addTitleterm(Crawler crawler, int current_id) throws IOException
 	{
 		int wordcount=0;
 		Vector<String> titlewords=null;
@@ -80,24 +135,24 @@ public class Launcher
 		Collections.sort(titlewords);
 		String k="";
 		if(titlewords.size()!=0)								
-		k=titlewords.get(wordcount);
+			k=titlewords.get(wordcount);
 		else
-		TitleId_Key_index.addEntry(Integer.toString(count_url),"");
+			TitleId_Key_index.addEntry(Integer.toString(current_id),"");
 		for (int g = 0; g < titlewords.size(); g++){
 			if(!k.equals(titlewords.get(g)))
 			{
-			wordcount=g-wordcount;
-			String tmp=""+wordcount;
-			TitleId_Key_index.addEntry(Integer.toString(count_url),k+":"+tmp);
-			Key_TitleId_index.addEntry(k,Integer.toString(count_url));
-			wordcount=g;
-			k=titlewords.get(g);
+				wordcount=g-wordcount;
+				String tmp=Integer.toString(wordcount);
+				TitleId_Key_index.addEntry(Integer.toString(current_id),k+":"+tmp);
+				Key_TitleId_index.addEntry(k,Integer.toString(current_id));
+				wordcount=g;
+				k=titlewords.get(g);
 			}
 		}
 		titlewords.clear();
 	}
 	
-	public void addContentterm(Crawler crawler) throws IOException
+	public void addContentterm(Crawler crawler, int current_id) throws IOException
 	{
 		int wordcount=0;
 		Vector<String> words=null;
@@ -109,22 +164,22 @@ public class Launcher
 		Collections.sort(words);
 		String k="";
 		if(words.size()!=0)								
-		k=words.get(wordcount);
+			k=words.get(wordcount);
 		else
-		Docid_Key_index.addEntry(Integer.toString(count_url), "");
+			Docid_Key_index.addEntry(Integer.toString(current_id), "");
 		for (int g = 0; g < words.size(); g++)
 		{
 			if(!k.equals(words.get(g)))
 			{
-			wordcount=g-wordcount;
-			if(wordcount>2)
-			{
-			String tmp=""+wordcount;
-			Docid_Key_index.addEntry(Integer.toString(count_url), k+":"+tmp);
-			Key_Docid_index.addEntry(k,Integer.toString(count_url));
-			}
-			wordcount=g;
-			k=words.get(g);
+				wordcount=g-wordcount;
+				if(wordcount>1)
+				{
+					String tmp=Integer.toString(wordcount);
+					Docid_Key_index.addEntry(Integer.toString(current_id), k+":"+tmp);
+					Key_Docid_index.addEntry(k,Integer.toString(current_id));
+				}
+				wordcount=g;
+				k=words.get(g);
 			}
 		}
 		words.clear();
@@ -143,15 +198,48 @@ public class Launcher
 		Id_Title_index.updateEntry(current_id, title);
 		String[] info = crawler.extractPageInfo().split(";");
 		String content_length = info[0];
+		try {
+			if(Integer.parseInt(content_length)<1)
+				content_length = Integer.toString(crawler.extractString().length());
+		} catch (ParserException e) {
+			e.printStackTrace();
+		}
 		Id_ContentLength_index.updateEntry(current_id, content_length);
 		String last_modified = info[1];
 		Id_LastModified_index.updateEntry(current_id, last_modified);
+		
+		//Add title word
+		int wordcount=0;
+		Vector<String> titlewords=null;
+		try {
+			titlewords = Stop_Stem(title);
+		} catch (ParserException e) {
+			e.printStackTrace();
+		}
+		Collections.sort(titlewords);
+		String k="";
+		if(titlewords.size()!=0)								
+			k=titlewords.get(wordcount);
+		else
+			TitleId_Key_index.updateEntry(current_id,"");
+		for (int g = 0; g < titlewords.size(); g++){
+			if(!k.equals(titlewords.get(g)))
+			{
+				wordcount=g-wordcount;
+				String tmp=Integer.toString(wordcount);
+				TitleId_Key_index.updateEntry(current_id,k+":"+tmp);
+				Key_TitleId_index.updateEntry(k,current_id);
+				wordcount=g;
+				k=titlewords.get(g);
+			}
+		}
+		titlewords.clear();
 	}
 	
-	public void updateTitleterm(Crawler crawler) throws IOException
+	public void updateTitleterm(Crawler crawler, String current_id) throws IOException
 	{
-		TitleId_Key_index.delValue(Integer.toString(count_url));
-		Key_TitleId_index.updateKey(Integer.toString(count_url));
+		//TitleId_Key_index.delValue(current_id);
+		//Key_TitleId_index.updateKey(current_id);
 		int wordcount=0;
 		Vector<String> titlewords=null;
 		try {
@@ -162,27 +250,27 @@ public class Launcher
 		Collections.sort(titlewords);
 		String k="";
 		if(titlewords.size()!=0)								
-		k=titlewords.get(wordcount);
+			k=titlewords.get(wordcount);
 		else
-		TitleId_Key_index.updateEntry(Integer.toString(count_url),"");
+			TitleId_Key_index.updateEntry(current_id,"");
 		for (int g = 0; g < titlewords.size(); g++){
 			if(!k.equals(titlewords.get(g)))
 			{
-			wordcount=g-wordcount;
-			String tmp=""+wordcount;
-			TitleId_Key_index.updateEntry(Integer.toString(count_url),k+":"+tmp);
-			Key_TitleId_index.updateEntry(k,Integer.toString(count_url));
-			wordcount=g;
-			k=titlewords.get(g);
+				wordcount=g-wordcount;
+				String tmp=Integer.toString(wordcount);
+				TitleId_Key_index.updateEntry(current_id,k+":"+tmp);
+				Key_TitleId_index.updateEntry(k,current_id);
+				wordcount=g;
+				k=titlewords.get(g);
 			}
 		}
 		titlewords.clear();
 	}
 	
-	public void updateContentterm(Crawler crawler) throws IOException
+	public void updateContentterm(Crawler crawler, String current_id) throws IOException
 	{
-		Docid_Key_index.delValue(Integer.toString(count_url));
-		Key_Docid_index.updateKey(Integer.toString(count_url));
+		//Docid_Key_index.delValue(current_id);
+		//Key_Docid_index.updateKey(current_id);
 		int wordcount=0;
 		Vector<String> words=null;
 		try {
@@ -193,18 +281,21 @@ public class Launcher
 		Collections.sort(words);
 		String k="";
 		if(words.size()!=0)								
-		k=words.get(wordcount);
+			k=words.get(wordcount);
 		else
-		Docid_Key_index.updateEntry(Integer.toString(count_url), "");
+			Docid_Key_index.updateEntry(current_id, "");
 		for (int g = 0; g < words.size(); g++){
 			if(!k.equals(words.get(g)))
 			{
-			wordcount=g-wordcount;
-			String tmp=""+wordcount;
-			Docid_Key_index.updateEntry(Integer.toString(count_url), k+":"+tmp);
-			Key_Docid_index.updateEntry(k,Integer.toString(count_url));
-			wordcount=g;
-			k=words.get(g);
+				wordcount=g-wordcount;
+				if(wordcount>1)
+				{
+					String tmp=Integer.toString(wordcount);
+					Docid_Key_index.updateEntry(current_id, k+":"+tmp);
+					Key_Docid_index.updateEntry(k,current_id);
+				}
+				wordcount=g;
+				k=words.get(g);
 			}
 		}
 		words.clear();
@@ -232,7 +323,6 @@ public class Launcher
 	public static void main (String[] args)
 	{	
 		count_url = 1;
-		count_term = 1;
 		try
 		{
 			Crawler crawler = new Crawler("http://www.cse.ust.hk/");
@@ -250,15 +340,15 @@ public class Launcher
 					if (!last_modified.equals(old_lastmodified))
 					{
 						launcher.updateData(crawler,id_temp);
-						launcher.updateTitleterm(crawler);
-						launcher.updateContentterm(crawler);
+						//launcher.updateTitleterm(crawler, id_temp);
+						launcher.updateContentterm(crawler, id_temp);
 					}
 				}
 				else
 				{
-				launcher.addData(crawler,current_id);
-				launcher.addTitleterm(crawler);
-				launcher.addContentterm(crawler);
+					launcher.addData(crawler,current_id);
+					//launcher.addTitleterm(crawler, current_id);
+					launcher.addContentterm(crawler, current_id);
 				}
 				Constructor.commit();
 
@@ -287,9 +377,9 @@ public class Launcher
 								
 								if (!last_modified.equals(old_lastmodified))
 								{
-									launcher.updateData(crawler,id_temp);
-									launcher.updateTitleterm(crawler);
-									launcher.updateContentterm(crawler);
+									launcher.updateData(crawler, id_temp);
+									//launcher.updateTitleterm(crawler, id_temp);
+									launcher.updateContentterm(crawler, id_temp);
 								}
 								
 								crawler.setURL(current_url);
@@ -304,12 +394,9 @@ public class Launcher
 								ChildLink_index.addEntry(Integer.toString(current_id), Integer.toString(count_url));
 								ParentLink_index.addEntry(Integer.toString(count_url), Integer.toString(current_id));
 								launcher.addData(crawler, count_url);
-
-								//Content Key
-								launcher.addContentterm(crawler);
-								
-								//Title Key
-                                launcher.addTitleterm(crawler);
+								launcher.addContentterm(crawler, count_url);
+                                //launcher.addTitleterm(crawler, count_url);
+                                
                          		Constructor.commit();
 								crawler.setURL(current_url);
 							}
@@ -328,8 +415,6 @@ public class Launcher
 
 				System.out.println("Finish");
 				System.out.println("");
-
-				
 
 				Constructor.finalization();		
 			}

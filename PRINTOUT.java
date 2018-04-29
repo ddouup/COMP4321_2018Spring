@@ -5,9 +5,6 @@ import java.io.IOException;
 
 public class PRINTOUT
 {	
-	private static int Required_Number = 30;
-	private static int count_url;
-	private static int count_term;
 	private static InvertedIndex Constructor;
 	public	static InvertedIndex Id_Url_index;
 	public	static InvertedIndex Url_Id_index;
@@ -20,8 +17,11 @@ public class PRINTOUT
 	public	static InvertedIndex Key_Docid_index;
 	public	static InvertedIndex TitleId_Key_index;
 	public	static InvertedIndex Key_TitleId_index;
+	
 	public	static InvertedIndex Key_Weight_index;
-
+	public  static InvertedIndex TitlePhrase_Weight_index;
+	public	static InvertedIndex Docid_SortKey_index;
+	public	static InvertedIndex TitleId_SortKey_index;
 
 	PRINTOUT() throws IOException
 	{	
@@ -37,29 +37,38 @@ public class PRINTOUT
 		Key_Docid_index = new InvertedIndex("project","key_docid");
 		TitleId_Key_index =new InvertedIndex("project","title_key");
 		Key_TitleId_index =new InvertedIndex("project","key_titleid");
+		
 		Key_Weight_index =new InvertedIndex("project","key_weight");
+		TitlePhrase_Weight_index = new InvertedIndex("project","titlephrase_weight");
+		Docid_SortKey_index = new InvertedIndex("project","docid_sortkey");
+		TitleId_SortKey_index = new InvertedIndex("project","titleid_sortkey");
 	}
 
 	public static void main (String[] args)
 	{	
-		count_url = 1;
-		count_term = 1;
-		
 			try
 			{
                 PRINTOUT PRINT=new PRINTOUT();
-				Id_Url_index.printAll();
-				Url_Id_index.printAll();
-				Id_Title_index.printAll();
-				Id_ContentLength_index.printAll();
-				Id_LastModified_index.printAll();
-				ParentLink_index.printAll();
-				Docid_Key_index.printAll();
-				Key_Docid_index.printAll();
-				TitleId_Key_index.printAll();
-				Key_TitleId_index.printAll();
+				//Id_Url_index.printAll();
+				//Url_Id_index.printAll();
+				//Id_Title_index.printAll();
+				//Id_ContentLength_index.printAll();
+				//Id_LastModified_index.printAll();
+				//ChildLink_index.printAll();
+				//ParentLink_index.printAll();
+				//Docid_Key_index.printAll();
+				//Key_Docid_index.printAll();
+				//TitleId_Key_index.printAll();
+				//Key_TitleId_index.printAll();
+                
 				Key_Weight_index.printAll();
-				
+				//TitlePhrase_Weight_index.printAll();
+				//Docid_SortKey_index.printAll();
+				//TitleId_SortKey_index.printAll();
+                /*System.out.println(Key_Docid_index.getEntry("hkust"));
+                System.out.println(Key_Weight_index.getEntry("hkust"));
+                System.out.println(Key_Docid_index.getEntry("pointer"));
+                System.out.println(Key_Weight_index.getEntry("pointer"));*/
 				Constructor.finalization();		
 			}
 			catch(IOException ex)
