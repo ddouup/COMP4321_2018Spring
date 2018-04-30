@@ -33,7 +33,7 @@ import java.util.StringTokenizer;
 	{
 		for(int i=0;i<word.size();i++)
 		{
-		   sqrtw=sqrtw+weight.get(i);
+		   sqrtw=sqrtw+weight.get(i)*weight.get(i);
 		   addwt=addwt+weight.get(i)*wordw.get(i);
 		}
 		cossin=(addwt)/(Math.sqrt(sqrtw)*Math.sqrt(sqrtt));
@@ -80,6 +80,8 @@ public class SearchEngine
 		DocID=new Vector<Integer>();
 		TitID=new Vector<Integer>();
 		Doc=new Vector<DocCom>();
+		Tit=new Vector<DocCom>();
+		
 		wei=new Vector<Integer>();
 		sqrtt=0.0;
 	}
@@ -128,9 +130,16 @@ public class SearchEngine
 		{
 			Doc.get(i).CalCos(sqrtt);
 			//System.out.println(Doc.get(i).cossin);
-			//Tit.get(i).CalCos(sqrtt);
 		}
-		/*
+		
+		for(int i=0;i<Tit.size();i++)
+		{
+			Tit.get(i).CalCos(sqrtt);
+			Tit.get(i).cossin=3*Tit.get(i).cossin;
+			//System.out.println(Doc.get(i).cossin);
+		}
+		
+		
         	for(int i=0;i<Tit.size();i++)
         	{
         		for(int j=0;j<Doc.size();j++)
@@ -147,9 +156,10 @@ public class SearchEngine
         	{
         		if(!Tit.get(i).same)
         		{
+        			Tit.get(i).cossin=Tit.get(i).cossin;
         			Doc.add(Tit.get(i));
         		}
-        	}*/
+        	}
 
 		Collections.sort(Doc, new CosComparator());
 	}
@@ -186,7 +196,10 @@ public class SearchEngine
 		       		 else
 		       			 UpdateDoc(dd); 
 		         }
-			}/*
+			}
+			
+			
+			
 			if(!valueT.equals("0"))
 			{
 				String[] tokens=valueT.split(";");
@@ -211,7 +224,9 @@ public class SearchEngine
 			       	else
 			       		UpdateDoc(dd);
 			    }
-			}*/
+			}
+			
+			
 		}
 	}
 	
@@ -302,7 +317,7 @@ public class SearchEngine
 					wordcount=g-wordcount;
 					System.out.println("Weight: "+wordcount);
 					wei.add(wordcount);
-					sqrtt=sqrtt+wordcount;
+					sqrtt=sqrtt+wordcount*wordcount;
 					k=result.get(g);
 					wordcount=g;
 					new_result.add(k);
@@ -313,7 +328,7 @@ public class SearchEngine
 					wordcount=g-wordcount+1;
 					System.out.println("Weight: "+wordcount);
 					wei.add(wordcount);
-					sqrtt=sqrtt+wordcount;
+					sqrtt=sqrtt+wordcount*wordcount;
 				}
 			}
 		}
