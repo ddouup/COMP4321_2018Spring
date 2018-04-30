@@ -27,7 +27,7 @@ public class Launcher
 	public	static InvertedIndex TitleId_SortKey_index;
 	public	static InvertedIndex Docid_KeyPos_index;
 
-	Launcher() throws IOException
+	public Launcher() throws IOException
 	{	
 		Constructor = new InvertedIndex("project");
 		Id_Url_index = new InvertedIndex("project","id_url");

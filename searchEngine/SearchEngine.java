@@ -19,7 +19,8 @@ import java.util.StringTokenizer;
 	public double sqrtw;
 	public double addwt;
 	public boolean same;
-	DocCom() throws IOException
+	
+	public DocCom() throws IOException
 	{
 		same=false;
 		id=0;
@@ -42,29 +43,6 @@ import java.util.StringTokenizer;
 	}
 
 }
-  
-
-class PageList {
-	public String title;
-	public String url;
-	public String key;
-	public String datesizeofpage;
-	public String parentlink;
-	public String childlink;
-	public double score;
-	
-	PageList ()
-	{
-		 score=0;
-		 String title="";
-		 String url="";
-		 String key="";
-		 String datesizeofpage="";
-		 String parentlink="";
-		 String childlink="";
-	}
-
-}
 
 public class SearchEngine
 {	
@@ -76,7 +54,7 @@ public class SearchEngine
 	public static Vector<Integer> wei;
 	public static double sqrtt;
 	
-	SearchEngine() throws IOException
+	public SearchEngine() throws IOException
 	{
 		launcher=new Launcher();
 		DocID=new Vector<Integer>();
@@ -110,7 +88,7 @@ public class SearchEngine
 			}
 			else
 			{
-				System.out.println("Key weight: "+tmp);
+				System.out.println("Key weight(body): "+tmp);
 				tmpweight.add(tmp);
 			}
 			if(tmpT==null)
@@ -119,6 +97,7 @@ public class SearchEngine
 			}
 			else
 			{
+				System.out.println("Key weight(title): "+tmp);
 				tmpweightT.add(tmpT);
 			}
 			
@@ -155,8 +134,11 @@ public class SearchEngine
 
 		Collections.sort(Doc, new CosComparator());
 	}
-	
-	
+	/*
+	public boolean containsPhrase(String id, String phrase)
+	{
+		
+	}*/
 	
 	public void update(Vector<String> result,Vector<Integer> wei,Vector<String> tmpweight,Vector<String> tmpweightT) throws IOException
 	{
@@ -355,6 +337,7 @@ public class SearchEngine
 				}
 				page.key=tmp;
 			}
+			String urls="";
 			tmp=launcher.ChildLink_index.getEntry(String.valueOf(Doc.get(i).id));
 			if(tmp!=null)
 			{
@@ -363,9 +346,9 @@ public class SearchEngine
 				{
 					String url="";
 					url=launcher.Id_Url_index.getEntry(token);
-					tmp=tmp+url+"\n";
+					urls=urls+url+"<br>";
 				}
-				page.childlink=tmp;
+				page.childlink=urls;
 			}
 			tmp=launcher.ParentLink_index.getEntry(String.valueOf(Doc.get(i).id));
 			if(tmp!=null)
@@ -375,9 +358,9 @@ public class SearchEngine
 				{
 					String url="";
 					url=launcher.Id_Url_index.getEntry(token);
-					tmp=tmp+url+"\n";
+					urls=urls+url+"<br>";
 				}
-				page.parentlink=tmp;
+				page.parentlink=urls;
 			}
 			page.datesizeofpage=launcher.Id_LastModified_index.getEntry(String.valueOf(Doc.get(i).id))+","+launcher.Id_ContentLength_index.getEntry(String.valueOf(Doc.get(i).id));
 			page.score=Doc.get(i).cossin;
@@ -404,3 +387,4 @@ public class SearchEngine
 		}
 	}
 }
+
