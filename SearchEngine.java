@@ -33,36 +33,14 @@ import java.util.StringTokenizer;
 	{
 		for(int i=0;i<word.size();i++)
 		{
-		   sqrtw=sqrtw+weight.get(i);
+		   sqrtw=sqrtw+weight.get(i)*weight.get(i);
 		   addwt=addwt+weight.get(i)*wordw.get(i);
 		}
 		cossin=(addwt)/(Math.sqrt(sqrtw)*Math.sqrt(sqrtt));
 	}
 
 }
-  
 
-class PageList {
-	public String title;
-	public String url;
-	public String key;
-	public String datesizeofpage;
-	public String parentlink;
-	public String childlink;
-	public double score;
-	
-	PageList ()
-	{
-		 score=0;
-		 String title="";
-		 String url="";
-		 String key="";
-		 String datesizeofpage="";
-		 String parentlink="";
-		 String childlink="";
-	}
-
-}
 
 public class SearchEngine
 {	
@@ -74,12 +52,14 @@ public class SearchEngine
 	public static Vector<Integer> wei;
 	public static double sqrtt;
 	
-	SearchEngine() throws IOException
+	public SearchEngine() throws IOException
 	{
 		launcher=new Launcher();
 		DocID=new Vector<Integer>();
 		TitID=new Vector<Integer>();
 		Doc=new Vector<DocCom>();
+		Tit=new Vector<DocCom>();
+		
 		wei=new Vector<Integer>();
 		sqrtt=0.0;
 	}
@@ -117,6 +97,7 @@ public class SearchEngine
 			}
 			else
 			{
+				System.out.println("Key weight(title): "+tmp);
 				tmpweightT.add(tmpT);
 			}
 			
@@ -128,9 +109,16 @@ public class SearchEngine
 		{
 			Doc.get(i).CalCos(sqrtt);
 			//System.out.println(Doc.get(i).cossin);
-			//Tit.get(i).CalCos(sqrtt);
 		}
-		/*
+		
+		for(int i=0;i<Tit.size();i++)
+		{
+			Tit.get(i).CalCos(sqrtt);
+			Tit.get(i).cossin=3*Tit.get(i).cossin;
+			//System.out.println(Doc.get(i).cossin);
+		}
+		
+		
         	for(int i=0;i<Tit.size();i++)
         	{
         		for(int j=0;j<Doc.size();j++)
@@ -147,9 +135,10 @@ public class SearchEngine
         	{
         		if(!Tit.get(i).same)
         		{
+        			Tit.get(i).cossin=Tit.get(i).cossin;
         			Doc.add(Tit.get(i));
         		}
-        	}*/
+        	}
 
 		Collections.sort(Doc, new CosComparator());
 	}
@@ -186,7 +175,10 @@ public class SearchEngine
 		       		 else
 		       			 UpdateDoc(dd); 
 		         }
-			}/*
+			}
+			
+			
+			
 			if(!valueT.equals("0"))
 			{
 				String[] tokens=valueT.split(";");
@@ -211,7 +203,9 @@ public class SearchEngine
 			       	else
 			       		UpdateDoc(dd);
 			    }
-			}*/
+			}
+			
+			
 		}
 	}
 	
@@ -302,7 +296,7 @@ public class SearchEngine
 					wordcount=g-wordcount;
 					System.out.println("Weight: "+wordcount);
 					wei.add(wordcount);
-					sqrtt=sqrtt+wordcount;
+					sqrtt=sqrtt+wordcount*wordcount;
 					k=result.get(g);
 					wordcount=g;
 					new_result.add(k);
@@ -313,7 +307,7 @@ public class SearchEngine
 					wordcount=g-wordcount+1;
 					System.out.println("Weight: "+wordcount);
 					wei.add(wordcount);
-					sqrtt=sqrtt+wordcount;
+					sqrtt=sqrtt+wordcount*wordcount;
 				}
 			}
 		}
@@ -353,6 +347,7 @@ public class SearchEngine
 				}
 				page.key=tmp;
 			}
+			String urls="";
 			tmp=launcher.ChildLink_index.getEntry(String.valueOf(Doc.get(i).id));
 			if(tmp!=null)
 			{
@@ -361,9 +356,9 @@ public class SearchEngine
 				{
 					String url="";
 					url=launcher.Id_Url_index.getEntry(token);
-					tmp=tmp+url+"\n";
+					urls=urls+url+"<br>";
 				}
-				page.childlink=tmp;
+				page.childlink=urls;
 			}
 			tmp=launcher.ParentLink_index.getEntry(String.valueOf(Doc.get(i).id));
 			if(tmp!=null)
@@ -373,9 +368,9 @@ public class SearchEngine
 				{
 					String url="";
 					url=launcher.Id_Url_index.getEntry(token);
-					tmp=tmp+url+"\n";
+					urls=urls+url+"<br>";
 				}
-				page.parentlink=tmp;
+				page.parentlink=urls;
 			}
 			page.datesizeofpage=launcher.Id_LastModified_index.getEntry(String.valueOf(Doc.get(i).id))+","+launcher.Id_ContentLength_index.getEntry(String.valueOf(Doc.get(i).id));
 			page.score=Doc.get(i).cossin;
