@@ -61,8 +61,6 @@ public class Launcher
 		Docid_VectorLength_index = new InvertedIndex("project","docid_vectorlength");
 		Titid_KeyWeight_index = new InvertedIndex("project","titid_keyweight");
 		Titid_VectorLength_index = new InvertedIndex("project","titid_vectorlength");
-		
-		Query_Result_index = new InvertedIndex("project","query_result");
 
 	}
 	

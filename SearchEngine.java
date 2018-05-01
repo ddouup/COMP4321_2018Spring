@@ -346,14 +346,12 @@ public class SearchEngine
         result=updateterwei(result);
 		
 		Sort(result,wei);
-		String value="";
 		for(int i=0;i<Doc.size();i++)
 		{   
 			if(i>10)
 				break;
 			PageList page=new PageList();
 			page.url=launcher.Id_Url_index.getEntry(String.valueOf(Doc.get(i).id));
-			value=value+page.url+";";
 			page.title=launcher.Id_Title_index.getEntry(String.valueOf(Doc.get(i).id));
 			String tmp=launcher.Docid_SortKey_index.getEntry(String.valueOf(Doc.get(i).id));
 			String keys="";
@@ -399,7 +397,6 @@ public class SearchEngine
 			page.score=Doc.get(i).cossin;
 			list.add(page);
 		}
-		launcher.Query_Result_index.addEntry(query,value);
 		return list;
 	}
 	
