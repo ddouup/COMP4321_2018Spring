@@ -76,7 +76,7 @@ public class DataProcess
 		{
 	        String[] tokens=value.split(";");
 	        a=tokens.length;
-	        System.out.println("length: "+a);
+	        System.out.println("Doc numbers: "+a);
 	        idf=Math.log(launcher.getRequiredNumber()/a)/Math.log(2);
 		}
 		return idf;
@@ -154,30 +154,24 @@ public class DataProcess
  	        if(Content!=null && !Content.equals(""))
  	        {
  	        	System.out.println("Keys in doc "+i+": "+Content);
+ 	        	double vectorLength = 0.0;
  	          String[] tokens=Content.split(";");
  	          for(String token:tokens)
  	          {
  	        	 String[] tmp=token.split(":");
- 	        	 boolean m=false;
- 	             int tf=0;
- 	        	 for(String t:tmp)
- 	        	 {
- 	        		 if(m==true)
- 	        		 {
- 	        		   tf=Integer.parseInt(t);
- 	        		 }
- 	        		 if(m==false)
- 	        		 {
- 	        		 word=t;
- 	        		 m=true;
- 	        		 } 
- 	        	 }
- 	        	 System.out.println("Word: "+word);
+ 	             int tf=Integer.parseInt(tmp[1]);
+ 	             word=tmp[0];
+ 	             System.out.println("Word: "+word);
  	 			score=Data.TermWeightCalculate(i,tf,word,false);
- 	 			String value=String.valueOf(i)+","+String.valueOf(df.format(score));
- 	 			//String value=String.valueOf(i)+","+score;
+ 	 			System.out.println("Weight of "+word+": "+score);
+ 	 			vectorLength=vectorLength+score*score;
+ 	 			launcher.Docid_KeyWeight_index.addEntry(Integer.toString(i), word+","+String.valueOf(score));
+ 	 			//String value=String.valueOf(i)+","+String.valueOf(df.format(score));
+ 	 			String value=Integer.toString(i)+","+score;
  	 			launcher.Key_Weight_index.addEntry(word, value); 
  	          }
+ 	          launcher.Docid_VectorLength_index.addEntry(Integer.toString(i), String.valueOf(Math.sqrt(vectorLength)));
+ 	          System.out.println("Doc "+i+" vector length: "+Math.sqrt(vectorLength));
  	        }
  		}
  		
@@ -187,30 +181,24 @@ public class DataProcess
  	        if(Content!=null && !Content.equals(""))
  	        {
  	        	System.out.println("Keys in doc "+i+"title: "+Content);
+ 	        	double vectorLength = 0.0;
  	          String[] tokens=Content.split(";");
  	          for(String token:tokens)
  	          {
  	        	 String[] tmp=token.split(":");
- 	        	 boolean m=false;
- 	             int tf=0;
- 	        	 for(String t:tmp)
- 	        	 {
- 	        		 if(m==true)
- 	        		 {
- 	        		   tf=Integer.parseInt(t);
- 	        		 }
- 	        		 if(m==false)
- 	        		 {
- 	        		 word=t;
- 	        		 m=true;
- 	        		 } 
- 	        	 }
+ 	             int tf = Integer.parseInt(tmp[1]);
+ 	             word=tmp[0];
  	        	System.out.println("Word: "+word);
  	 			score=Data.TermWeightCalculate(i,tf,word,true);
+ 	 			System.out.println("Weight of "+word+": "+score);
+ 	 			vectorLength=vectorLength+score*score;
+ 	 			launcher.Titid_KeyWeight_index.addEntry(Integer.toString(i), word+","+String.valueOf(score));
  	 			//String value=String.valueOf(i)+","+String.valueOf(df.format(score));
- 	 			String value=String.valueOf(i)+","+score;
+ 	 			String value=Integer.toString(i)+","+score;
  	 			launcher.TitlePhrase_Weight_index.addEntry(word, value); 
- 	          }
+ 	          } 	          
+ 	          launcher.Titid_VectorLength_index.addEntry(Integer.toString(i), String.valueOf(Math.sqrt(vectorLength)));
+ 	          System.out.println("Doc "+i+" vector length: "+Math.sqrt(vectorLength));
  	        }
  		}
  		

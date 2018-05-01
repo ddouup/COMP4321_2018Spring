@@ -1,10 +1,12 @@
 package searchEngine;
 
+
 import java.util.Vector;
 import java.util.Comparator;
 import java.io.IOException;
 import java.util.Collections;  
 import java.util.StringTokenizer;
+
 
  class DocCom {
 	public Vector<String> word;
@@ -15,6 +17,7 @@ import java.util.StringTokenizer;
 	public double sqrtw;
 	public double addwt;
 	public boolean same;
+	public boolean isTitle;
 	DocCom() throws IOException
 	{
 		same=false;
@@ -27,16 +30,18 @@ import java.util.StringTokenizer;
 		addwt=0.0;
 	}
 	
-	public void CalCos(double sqrtt)
+	public void CalCos(double sqrtt) throws IOException
 	{
+		if (isTitle)
+			sqrtw = Double.parseDouble(Launcher.Titid_VectorLength_index.getEntry(Integer.toString(id)));
+		else
+			sqrtw = Double.parseDouble(Launcher.Docid_VectorLength_index.getEntry(Integer.toString(id)));
 		for(int i=0;i<word.size();i++)
 		{
-		   sqrtw=sqrtw+weight.get(i)*weight.get(i);
-		   addwt=addwt+weight.get(i)*wordw.get(i);
+			addwt=addwt+weight.get(i)*wordw.get(i);
 		}
-		cossin=(addwt)/(Math.sqrt(sqrtw)*Math.sqrt(sqrtt));
+		cossin=(addwt)/(sqrtw*Math.sqrt(sqrtt));
 	}
-
 }
 
 
@@ -48,6 +53,7 @@ public class SearchEngine
 	public static Vector<DocCom> Doc;
 	public static Vector<DocCom> Tit;
 	public static Vector<Integer> wei;
+	public static Vector<String> Phrase; //phrase without stopword removal or stemming
 	public static double sqrtt;
 	
 	public SearchEngine() throws IOException
@@ -59,6 +65,7 @@ public class SearchEngine
 		Tit=new Vector<DocCom>();
 		
 		wei=new Vector<Integer>();
+		Phrase = new Vector<String>();
 		sqrtt=0.0;
 	}
 	
@@ -86,16 +93,17 @@ public class SearchEngine
 			}
 			else
 			{
-				System.out.println("Key weight: "+tmp);
+				System.out.println("Key weight(body): "+tmp);
 				tmpweight.add(tmp);
 			}
 			if(tmpT==null)
 			{
+				System.out.println("No title");
 				tmpweightT.add("0");
 			}
 			else
 			{
-				System.out.println("Key weight(title): "+tmp);
+				System.out.println("Key weight(title): "+tmpT);
 				tmpweightT.add(tmpT);
 			}
 			
@@ -141,7 +149,27 @@ public class SearchEngine
 		Collections.sort(Doc, new CosComparator());
 	}
 	
-	
+	public boolean containsPhrase(String id) throws IOException
+	{
+		return true;
+		/*
+		if (Phrase.isEmpty())
+		{
+			System.out.println("no phrase input");
+			return true;
+		}
+		else
+		{
+			String content = launcher.Docid_String_index.getEntry(id);
+			for (int i = 0; i < Phrase.size(); i++)
+			{
+				if(content.contains(Phrase.get(i)))
+					System.out.println(id+" contains phrase: "+Phrase.get(i));
+					return true;
+			}
+			return false;
+		}*/
+	}
 	
 	public void update(Vector<String> result,Vector<Integer> wei,Vector<String> tmpweight,Vector<String> tmpweightT) throws IOException
 	{
@@ -150,60 +178,65 @@ public class SearchEngine
 		{
 			String value=tmpweight.get(i);
 			String valueT=tmpweightT.get(i);
+			//Body terms
 			if(!value.equals("0"))
 			{
 				String[] tokens=value.split(";");
 		         for(String token:tokens)
 		         {
 			       	 String[] tmp=token.split(",");
-			       	 int docID=0;
-			       	 DocCom dd=new DocCom();
-			       	 dd.word.add(result.get(i));
-			       	 dd.wordw.add(wei.get(i));
-			       	 
-			       	docID=Integer.parseInt(tmp[0]);
-		       		dd.id=Integer.parseInt(tmp[0]);
-		       		dd.weight.add(Double.parseDouble(tmp[1]));
-		       		
-		       		if(!DocID.contains(docID))
-		       		{
-		       			DocID.add(docID);
-		       			Doc.add(dd);
-		       		}
-		       		 else
-		       			 UpdateDoc(dd); 
+			       	 if (containsPhrase(tmp[0]))
+			       	 {
+				       	 int docID=0;
+				       	 DocCom dd=new DocCom();
+				       	 dd.isTitle=false;
+				       	 dd.word.add(result.get(i));
+				       	 dd.wordw.add(wei.get(i));
+				       	 
+				       	docID=Integer.parseInt(tmp[0]);
+			       		dd.id=Integer.parseInt(tmp[0]);
+			       		dd.weight.add(Double.parseDouble(tmp[1]));
+			       		
+			       		if(!DocID.contains(docID))
+			       		{
+			       			DocID.add(docID);
+		       				System.out.println("Doc ID: "+docID);
+			       			Doc.add(dd);
+			       		}
+			       		 else
+			       			 UpdateDoc(dd); 
+			       	 }
 		         }
 			}
-			
-			
-			
+			//Title terms
 			if(!valueT.equals("0"))
 			{
 				String[] tokens=valueT.split(";");
 		        for(String token:tokens)
 		        {
-			       	 String[] tmp=token.split(",");
-			       	 boolean m=false;
-			       	 int titID=0;
-			       	 DocCom dd=new DocCom();
-			       	 dd.word.add(result.get(i));
-			       	 dd.wordw.add(wei.get(i));
-			       	
-	       			titID=Integer.parseInt(tmp[0]);
-	       			 dd.id=Integer.parseInt(tmp[0]);
-		       		dd.weight.add(Double.parseDouble(tmp[1]));
-	       			 if(!TitID.contains(titID))
-	       			 {
-	       				TitID.add(titID);
-	       				System.out.println("Title ID: "+titID);
-			        	Tit.add(dd);
-	       			 }
-			       	else
-			       		UpdateDoc(dd);
+			       	String[] tmp=token.split(",");
+			       	if (containsPhrase(tmp[0]))
+			       	{
+				       	 int titID=0;
+				       	 DocCom dd=new DocCom();
+				       	dd.isTitle=true;
+				       	 dd.word.add(result.get(i));
+				       	 dd.wordw.add(wei.get(i));
+				       	
+		       			titID=Integer.parseInt(tmp[0]);
+		       			 dd.id=Integer.parseInt(tmp[0]);
+			       		dd.weight.add(Double.parseDouble(tmp[1]));
+		       			 if(!TitID.contains(titID))
+		       			 {
+		       				TitID.add(titID);
+		       				System.out.println("Title ID: "+titID);
+				        	Tit.add(dd);
+		       			 }
+				       	else
+				       		UpdateDoc(dd);
+			       	}
 			    }
 			}
-			
-			
 		}
 	}
 	
@@ -220,58 +253,50 @@ public class SearchEngine
         	}
         }
 	}
-	
-    public int phrasequery(String query)
-    {
-    	int result=query.indexOf("\"");
-    	if(result==-1)
-    		return -1;
-    	String substr=query.substring(result+1);
-    	result=substr.indexOf("\"");
-    	if(result==-1)
-    		return -1;
-    	return result;
-    }
     
     public Vector<String> queryprocess(String query)
     {
     	//update wei
+    	boolean isPhrase = false;
     	StopStem stopStem = new StopStem("stopwords.txt");
 		Vector<String> result=new Vector<String>();
 		StringTokenizer st = new StringTokenizer(query);
-		int endindex=phrasequery(query);
-		if(endindex==-1)
+		String temp="";
+		while (st.hasMoreTokens()) 
 		{
-			while (st.hasMoreTokens()) 
+			String word = st.nextToken();
+			if (!stopStem.isStopWord(word))
 			{
-				String word = st.nextToken();
-				if (!stopStem.isStopWord(word))
+				if (word.indexOf("\"")==0)
 				{
-					word = stopStem.stem(word);
-					boolean isWord=word.matches("^[A-Za-z0-9]+");
-					if(isWord)
-					{
-					    result.add(word);
-					}
+					isPhrase = true;
+					temp = word.substring(1);
+					if(stopStem.isStopWord(word.substring(1)))
+						continue;
+				}
+				else if (word.indexOf("\"")==word.length()-1)
+				{
+
+					temp = temp + " " +word;
+					Phrase.add(temp);
+					temp="";
+					isPhrase = false;
+					if(stopStem.isStopWord(word.substring(0, word.length()-1)))
+						continue;
+				}
+				else if (isPhrase)
+				{
+					temp = temp + " " + word;
+				}
+				word = stopStem.stem(word);
+				boolean isWord=word.matches("^[A-Za-z0-9]+");
+				if(isWord)
+				{
+					result.add(word);
 				}
 			}
 		}
-		else
-		{
-			String[] tokens=query.split("\"");
-            for(String token:tokens)
-            {
-    			if (!stopStem.isStopWord(token))
-    			{
-    				token = stopStem.stem(token);
-    				boolean isWord=token.matches("^[A-Za-z0-9]+");
-    				if(isWord)
-    				{
-    				    result.add(token);
-    				}
-    			}
-            }
-		}
+		System.out.println("Phrase: "+Phrase);
 		return result;
     }
     
@@ -319,6 +344,7 @@ public class SearchEngine
 		//Query Process
 		Vector<PageList> list= new Vector<PageList>();
 		Vector<String> result=new Vector<String>();
+		Phrase=new Vector<String>();
         result=queryprocess(query);
         result=updateterwei(result);
 		
@@ -326,24 +352,25 @@ public class SearchEngine
 		
 		for(int i=0;i<Doc.size();i++)
 		{   
-			if(i>50)
+			if(i>10)
 				break;
 			PageList page=new PageList();
 			page.url=launcher.Id_Url_index.getEntry(String.valueOf(Doc.get(i).id));
 			page.title=launcher.Id_Title_index.getEntry(String.valueOf(Doc.get(i).id));
 			String tmp=launcher.Docid_SortKey_index.getEntry(String.valueOf(Doc.get(i).id));
+			String keys="";
 			if(tmp!=null)
 			{
 				String []tokens=tmp.split(";");
 				int j=0;
 				for(String token:tokens)
 				{
-					tmp=tmp+token+";";
+					keys=keys+token+";";
 					j++;
 					if(j>4)
-					break;
+						break;
 				}
-				page.key=tmp;
+				page.key=keys;
 			}
 			String urls="";
 			tmp=launcher.ChildLink_index.getEntry(String.valueOf(Doc.get(i).id));
@@ -381,7 +408,8 @@ public class SearchEngine
 	public static void main (String[] args) throws IOException
 	{
 		SearchEngine searchEngine = new SearchEngine();
-		Vector<PageList> result = searchEngine.search("alumni hkust hkust");
+		Vector<PageList> result = searchEngine.search("alumni");
+		//\"hong kong\"  \"hong kong\" alumni \"a computer science technology a\" hkust hkust
 		for(int i = 0; i < result.size(); i++)
 		{	
 			System.out.println("Score: "+result.get(i).score);
@@ -389,8 +417,8 @@ public class SearchEngine
 			System.out.println(result.get(i).url);
 			System.out.println(result.get(i).key);
 			System.out.println(result.get(i).datesizeofpage);
-			System.out.println("P_link: "+result.get(i).parentlink);
-			System.out.println("C_link: "+result.get(i).childlink);
+			//System.out.println("P_link: "+result.get(i).parentlink);
+			//System.out.println("C_link: "+result.get(i).childlink);
 			//System.out.println("");
 		}
 	}

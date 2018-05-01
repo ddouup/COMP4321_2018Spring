@@ -26,6 +26,7 @@ public class Launcher2 {
 	public	static InvertedIndex Docid_SortKey_index;
 	public	static InvertedIndex TitleId_SortKey_index;
 	public	static InvertedIndex Docid_KeyPos_index;
+	public	static InvertedIndex Docid_String_index;
 
 	Launcher2() throws IOException
 	{	
@@ -47,6 +48,7 @@ public class Launcher2 {
 		Docid_SortKey_index = new InvertedIndex("project","docid_sortkey");
 		TitleId_SortKey_index = new InvertedIndex("project","titleid_sortkey");
 		Docid_KeyPos_index = new InvertedIndex("project","docid_keypos"); //stored words with position, used for phrase search
+		Docid_String_index = new InvertedIndex("project","docid_string");
 	}
 	
 	public int getRequiredNumber() throws IOException
@@ -58,21 +60,21 @@ public class Launcher2 {
 	{
 		Launcher2 launcher2 = new Launcher2();
 		Crawler crawler = new Crawler("http://www.cse.ust.hk/");
-		/*
-		Vector<String> old_ids = Docid_KeyPos_index.ReturnKey();
+		
+		Vector<String> old_ids = Docid_String_index.ReturnKey();
 		System.out.println(old_ids);
-		for (int i = 1; i < old_ids.size(); i++)
+		for (int i = 0; i < old_ids.size(); i++)
 		{
-			Docid_KeyPos_index.delEntry(old_ids.get(i));
+			Docid_String_index.delEntry(old_ids.get(i));
 			System.out.println(old_ids.get(i)+" deleted.");
-		}*/
+		}
 		
 		Vector<String> words=null;
 		Vector<String> ids = Id_Url_index.ReturnKey();
 		System.out.println(ids);
 		String url = "";
 		String KeyPos = "";
-		for (int i = 1; i < ids.size(); i++)
+		for (int i = 0; i < ids.size(); i++)
 		{
 			url = Id_Url_index.getEntry(ids.get(i));
 			System.out.println("Processing url: "+ids.get(i));
@@ -89,6 +91,17 @@ public class Launcher2 {
 			else
 				Docid_KeyPos_index.addEntry(ids.get(i), "");
 		}
+		/*
+		for (int i = 0; i < ids.size(); i++)
+		{
+			System.out.println("i: "+ids.get(i));
+			url = Id_Url_index.getEntry(ids.get(i));
+			System.out.println("Processing url: "+url);
+			crawler.setURL(url);
+			String result = crawler.extractString();
+			Docid_String_index.addEntry(ids.get(i), result);
+		}*/
 		Constructor.finalization();
+		System.out.println("done");
 	}
 }
