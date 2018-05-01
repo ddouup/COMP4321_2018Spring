@@ -145,6 +145,8 @@ public class SearchEngine
 	
 	public boolean containsPhrase(String id) throws IOException
 	{
+		return true;
+		/*
 		if (Phrase.isEmpty())
 		{
 			System.out.println("no phrase input");
@@ -160,7 +162,7 @@ public class SearchEngine
 					return true;
 			}
 			return false;
-		}
+		}*/
 	}
 	
 	public void update(Vector<String> result,Vector<Integer> wei,Vector<String> tmpweight,Vector<String> tmpweightT) throws IOException

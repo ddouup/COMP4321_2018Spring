@@ -91,7 +91,7 @@ public class PRINTOUT
                 System.out.println(Key_Weight_index.getEntry("hkust"));
                 System.out.println(Key_Docid_index.getEntry("pointer"));
                 System.out.println(Key_Weight_index.getEntry("pointer"));*/
-                System.out.println(Docid_Key_index.getEntry("1000")+"\n"+Docid_String_index.getEntry("1000"));
+                //System.out.println(Docid_Key_index.getEntry("1000")+"\n"+Docid_String_index.getEntry("1000"));
 				Constructor.finalization();		
 			}
 			catch(IOException ex)
