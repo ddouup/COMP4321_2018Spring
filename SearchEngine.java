@@ -15,6 +15,7 @@ import java.util.StringTokenizer;
 	public double sqrtw;
 	public double addwt;
 	public boolean same;
+	public boolean isTitle;
 	DocCom() throws IOException
 	{
 		same=false;
@@ -27,14 +28,17 @@ import java.util.StringTokenizer;
 		addwt=0.0;
 	}
 	
-	public void CalCos(double sqrtt)
+	public void CalCos(double sqrtt) throws IOException
 	{
+		if (isTitle)
+			sqrtw = Double.parseDouble(Launcher.Titid_VectorLength_index.getEntry(Integer.toString(id)));
+		else
+			sqrtw = Double.parseDouble(Launcher.Docid_VectorLength_index.getEntry(Integer.toString(id)));
 		for(int i=0;i<word.size();i++)
 		{
-		   sqrtw=sqrtw+weight.get(i)*weight.get(i);
-		   addwt=addwt+weight.get(i)*wordw.get(i);
+			addwt=addwt+weight.get(i)*wordw.get(i);
 		}
-		cossin=(addwt)/(Math.sqrt(sqrtw)*Math.sqrt(sqrtt));
+		cossin=(addwt)/(sqrtw*Math.sqrt(sqrtt));
 	}
 }
 
@@ -172,6 +176,7 @@ public class SearchEngine
 		{
 			String value=tmpweight.get(i);
 			String valueT=tmpweightT.get(i);
+			//Body terms
 			if(!value.equals("0"))
 			{
 				String[] tokens=value.split(";");
@@ -182,6 +187,7 @@ public class SearchEngine
 			       	 {
 				       	 int docID=0;
 				       	 DocCom dd=new DocCom();
+				       	 dd.isTitle=false;
 				       	 dd.word.add(result.get(i));
 				       	 dd.wordw.add(wei.get(i));
 				       	 
@@ -200,7 +206,7 @@ public class SearchEngine
 			       	 }
 		         }
 			}
-			
+			//Title terms
 			if(!valueT.equals("0"))
 			{
 				String[] tokens=valueT.split(";");
@@ -211,6 +217,7 @@ public class SearchEngine
 			       	{
 				       	 int titID=0;
 				       	 DocCom dd=new DocCom();
+				       	dd.isTitle=true;
 				       	 dd.word.add(result.get(i));
 				       	 dd.wordw.add(wei.get(i));
 				       	
@@ -399,7 +406,8 @@ public class SearchEngine
 	public static void main (String[] args) throws IOException
 	{
 		SearchEngine searchEngine = new SearchEngine();
-		Vector<PageList> result = searchEngine.search("\"hong kong\"  \"hong kong\" alumni \"a computer science technology a\" hkust hkust");
+		Vector<PageList> result = searchEngine.search("alumni");
+		//\"hong kong\"  \"hong kong\" alumni \"a computer science technology a\" hkust hkust
 		for(int i = 0; i < result.size(); i++)
 		{	
 			System.out.println("Score: "+result.get(i).score);
