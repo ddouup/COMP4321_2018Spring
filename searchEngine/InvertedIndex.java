@@ -26,6 +26,8 @@ public class InvertedIndex
     {
         recman = RecordManagerFactory.createRecordManager("/home/ddou/comp4321/"+recordmanager);
         RecordManagerName = "/home/ddou/comp4321/"+recordmanager;
+        /*recman = RecordManagerFactory.createRecordManager(recordmanager);
+        RecordManagerName = recordmanager;*/
         System.out.println("RecordManager Created: " + RecordManagerName);
     }
     public InvertedIndex(String recordmanager, String objectname) throws IOException

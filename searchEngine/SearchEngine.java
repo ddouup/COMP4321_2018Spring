@@ -151,8 +151,6 @@ public class SearchEngine
 	
 	public boolean containsPhrase(String id) throws IOException
 	{
-		return true;
-		/*
 		if (Phrase.isEmpty())
 		{
 			System.out.println("no phrase input");
@@ -160,15 +158,29 @@ public class SearchEngine
 		}
 		else
 		{
-			String content = launcher.Docid_String_index.getEntry(id);
+			boolean contains = false;
+			String[] words = launcher.Docid_KeyPos_index.getEntry(id).split(";");
 			for (int i = 0; i < Phrase.size(); i++)
 			{
-				if(content.contains(Phrase.get(i)))
-					System.out.println(id+" contains phrase: "+Phrase.get(i));
-					return true;
+				String[] phrase_words = Phrase.get(i).split(" ");
+				for (int j = 0; j < words.length; j++)
+				{
+					if (words[j].equals(phrase_words[0]))
+					{
+						contains = true;
+						for (int k = 0; k < phrase_words.length; k++)
+						{
+							if(!phrase_words[k].equals(words[j+k]))
+							{
+								contains = false;
+							}
+						}
+					}
+				}
 			}
-			return false;
-		}*/
+			System.out.println(contains);
+			return contains;
+		}
 	}
 	
 	public void update(Vector<String> result,Vector<Integer> wei,Vector<String> tmpweight,Vector<String> tmpweightT) throws IOException
@@ -200,7 +212,6 @@ public class SearchEngine
 			       		if(!DocID.contains(docID))
 			       		{
 			       			DocID.add(docID);
-		       				System.out.println("Doc ID: "+docID);
 			       			Doc.add(dd);
 			       		}
 			       		 else
@@ -229,7 +240,6 @@ public class SearchEngine
 		       			 if(!TitID.contains(titID))
 		       			 {
 		       				TitID.add(titID);
-		       				System.out.println("Title ID: "+titID);
 				        	Tit.add(dd);
 		       			 }
 				       	else
@@ -270,23 +280,30 @@ public class SearchEngine
 				if (word.indexOf("\"")==0)
 				{
 					isPhrase = true;
-					temp = word.substring(1);
 					if(stopStem.isStopWord(word.substring(1)))
 						continue;
+					else
+						temp = stopStem.stem(word.substring(1));
 				}
 				else if (word.indexOf("\"")==word.length()-1)
 				{
-
-					temp = temp + " " +word;
-					Phrase.add(temp);
-					temp="";
 					isPhrase = false;
 					if(stopStem.isStopWord(word.substring(0, word.length()-1)))
+					{
+						Phrase.add(temp);
+						temp="";
 						continue;
+					}
+					else
+					{
+						temp = temp + " " +stopStem.stem(word.substring(0, word.length()-1));
+						Phrase.add(temp);
+						temp="";
+					}
 				}
 				else if (isPhrase)
 				{
-					temp = temp + " " + word;
+					temp = temp + " " + stopStem.stem(word);
 				}
 				word = stopStem.stem(word);
 				boolean isWord=word.matches("^[A-Za-z0-9]+");
@@ -352,7 +369,7 @@ public class SearchEngine
 		
 		for(int i=0;i<Doc.size();i++)
 		{   
-			if(i>10)
+			if(i>=50)
 				break;
 			PageList page=new PageList();
 			page.url=launcher.Id_Url_index.getEntry(String.valueOf(Doc.get(i).id));
@@ -408,7 +425,7 @@ public class SearchEngine
 	public static void main (String[] args) throws IOException
 	{
 		SearchEngine searchEngine = new SearchEngine();
-		Vector<PageList> result = searchEngine.search("alumni");
+		Vector<PageList> result = searchEngine.search("\"hong kong\"");
 		//\"hong kong\"  \"hong kong\" alumni \"a computer science technology a\" hkust hkust
 		for(int i = 0; i < result.size(); i++)
 		{	
@@ -419,7 +436,7 @@ public class SearchEngine
 			System.out.println(result.get(i).datesizeofpage);
 			//System.out.println("P_link: "+result.get(i).parentlink);
 			//System.out.println("C_link: "+result.get(i).childlink);
-			//System.out.println("");
 		}
+		System.out.println("Finished");
 	}
 }

@@ -60,14 +60,14 @@ public class Launcher2 {
 	{
 		Launcher2 launcher2 = new Launcher2();
 		Crawler crawler = new Crawler("http://www.cse.ust.hk/");
-		
+		/*
 		Vector<String> old_ids = Docid_String_index.ReturnKey();
 		System.out.println(old_ids);
 		for (int i = 0; i < old_ids.size(); i++)
 		{
 			Docid_String_index.delEntry(old_ids.get(i));
 			System.out.println(old_ids.get(i)+" deleted.");
-		}
+		}*/
 		
 		Vector<String> words=null;
 		Vector<String> ids = Id_Url_index.ReturnKey();
@@ -84,8 +84,8 @@ public class Launcher2 {
 			{
 				for (int j = 0; j < words.size(); j++)
 				{
-					KeyPos = words.get(j)+":"+Integer.toString(j);
-					Docid_KeyPos_index.addEntry(ids.get(i), KeyPos);
+					//KeyPos = words.get(j)+":"+Integer.toString(j);
+					Docid_KeyPos_index.addEntry(ids.get(i), words.get(j));
 				}
 			}
 			else

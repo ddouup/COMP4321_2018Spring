@@ -81,10 +81,10 @@ public class PRINTOUT
 				//TitlePhrase_Weight_index.printAll();
 				//Docid_SortKey_index.printAll();
 				//TitleId_SortKey_index.printAll();
-                //Docid_KeyPos_index.printAll();
+                Docid_KeyPos_index.printAll();
                 //Docid_String_index.printAll();
 
-        		Docid_KeyWeight_index.printAll();
+        		//Docid_KeyWeight_index.printAll();
         		//Docid_VectorLength_index.printAll();
         		//Titid_KeyWeight_index.printAll(); 
         		//Titid_VectorLength_index.printAll(); 

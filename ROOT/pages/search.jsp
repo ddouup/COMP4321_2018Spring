@@ -40,14 +40,13 @@
 			String query = request.getParameter("search_text");
 			if(query!=null)
 			{
-				out.println("You input "+query);
 				SearchEngine s = new SearchEngine();
 				Vector<PageList> result = s.search(query);
-				out.println(result.size());
 				for(int i = 0; i < result.size(); i++)
 				{	
 				%>
 				<div>
+					<h4>Query: <%= query%></h4>
 					<h5>Number: <%= i+1%></h5>
 					<h5>Score: <%= result.get(i).score%></h5>
 					<h5><%= result.get(i).title%></h5>
@@ -61,9 +60,11 @@
 				}
 			}
 			else
-			{
-				out.println("You input nothing");
-			}
+			{%>
+				<div>
+				<h5>Please input valid characters.</h5>
+				</div>
+			<%}
 
 			%>
 		</div>
