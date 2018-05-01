@@ -40,6 +40,7 @@
 			    
 			    Cookie ck[] = request.getCookies();
 			    Vector<String> que = new Vector<String>();
+			    Vector<String> res = new Vector<String>();
 			    String tmp="";
 				if(ck == null)
 				{
@@ -50,16 +51,18 @@
 				     for(int i = 0; i < ck.length; i++)
 				     {
 					if(ck[i].getName().equals("Query"))
-						tmp = ck[i].getValue();
-						que.add(tmp);
+						{
+							tmp = ck[i].getValue();
+							que.add(tmp);
+						}
+					else
+						{
+							tmp = ck[i].getValue();
+							res.add(tmp);
+						}
 				     }
-
 				}
-				
-				Cookie newck = new Cookie("times",Integer.toString(times+1));
-				newck.setMaxAge(60*60); // 1 hour
-				response.addCookie(newck);
-
+            String res="";
 			String query = request.getParameter("search_text");
 			if(query!=null)
 			{
@@ -67,8 +70,10 @@
 				SearchEngine s = new SearchEngine();
 				Vector<PageList> result = s.search(query);
 				out.println(result.size());
+				
 				for(int i = 0; i < result.size(); i++)
 				{	
+				res=res+result.get(i).url+";";
 				%>
 				<div>
 					<h5>Number: <%= i+1%></h5>
@@ -83,8 +88,11 @@
 				<%
 				}
 				Cookie newck = new Cookie("Query",query);
+				Cookie newckr =new Cookie("Result",res);
 				newck.setMaxAge(60*60); // 1 hour
+				newckr.setMaxAge(60*60);
 				response.addCookie(newck);
+				response.addCookie(newckr);
 			}
 			else
 			{
