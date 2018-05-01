@@ -26,6 +26,12 @@ public class Launcher
 	public	static InvertedIndex Docid_SortKey_index;
 	public	static InvertedIndex TitleId_SortKey_index;
 	public	static InvertedIndex Docid_KeyPos_index;
+	
+	public	static InvertedIndex Docid_KeyWeight_index;
+	public	static InvertedIndex Docid_VectorLength_index;
+	public	static InvertedIndex Titid_KeyWeight_index;
+	public	static InvertedIndex Titid_VectorLength_index;
+
 
 	public Launcher() throws IOException
 	{	
@@ -47,6 +53,11 @@ public class Launcher
 		Docid_SortKey_index = new InvertedIndex("project","docid_sortkey");
 		TitleId_SortKey_index = new InvertedIndex("project","titleid_sortkey");
 		Docid_KeyPos_index = new InvertedIndex("project","docid_keypos"); //stored words with position, used for phrase search
+		
+		Docid_KeyWeight_index = new InvertedIndex("project","docid_keyweight");
+		Docid_VectorLength_index = new InvertedIndex("project","docid_vectorlength");
+		Titid_KeyWeight_index = new InvertedIndex("project","titid_keyweight");
+		Titid_VectorLength_index = new InvertedIndex("project","titid_vectorlength");
 	}
 	
 	public int getRequiredNumber() throws IOException

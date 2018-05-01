@@ -36,7 +36,6 @@ import java.util.StringTokenizer;
 		}
 		cossin=(addwt)/(Math.sqrt(sqrtw)*Math.sqrt(sqrtt));
 	}
-
 }
 
 
