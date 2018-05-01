@@ -180,10 +180,17 @@ public class SearchEngine
 						contains = true;
 						for (int k = 0; k < phrase_words.length; k++)
 						{
-							if(!phrase_words[k].equals(words[j+k]))
+							System.out.println("K: "+k);
+							System.out.println("J: "+j);
+							if ((j+k)<words.length)
 							{
-								contains = false;
+								if(!phrase_words[k].equals(words[j+k]))
+								{
+									contains = false;
+								}
 							}
+							else
+								contains = false;
 						}
 					}
 				}
@@ -436,7 +443,7 @@ public class SearchEngine
 	{
 		//SearchEngine searchEngine = new SearchEngine("/home/ddou/comp4321/project");
 		SearchEngine searchEngine = new SearchEngine();
-		Vector<PageList> result = searchEngine.search("\"hong kong\"");
+		Vector<PageList> result = searchEngine.search("\"hkust alumni\"");
 		//\"hong kong\"  \"hong kong\" alumni \"a computer science technology a\" hkust hkust
 		for(int i = 0; i < result.size(); i++)
 		{	
