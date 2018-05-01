@@ -27,7 +27,6 @@ public class Launcher
 	public	static InvertedIndex Docid_SortKey_index;
 	public	static InvertedIndex TitleId_SortKey_index;
 	public	static InvertedIndex Docid_KeyPos_index;
-	public	static InvertedIndex Docid_String_index;
 	
 	public	static InvertedIndex Docid_KeyWeight_index;
 	public	static InvertedIndex Docid_VectorLength_index;
@@ -54,7 +53,6 @@ public class Launcher
 		Docid_SortKey_index = new InvertedIndex("project","docid_sortkey");
 		TitleId_SortKey_index = new InvertedIndex("project","titleid_sortkey");
 		Docid_KeyPos_index = new InvertedIndex("project","docid_keypos"); //stored words with position, used for phrase search
-		Docid_String_index = new InvertedIndex("project","docid_string");
 		
 		Docid_KeyWeight_index = new InvertedIndex("project","docid_keyweight");
 		Docid_VectorLength_index = new InvertedIndex("project","docid_vectorlength");
@@ -62,6 +60,33 @@ public class Launcher
 		Titid_VectorLength_index = new InvertedIndex("project","titid_vectorlength");
 	}
 	
+	public Launcher(String path) throws IOException
+	{
+		Constructor = new InvertedIndex(path);
+		Id_Url_index = new InvertedIndex(path,"id_url");
+		Url_Id_index = new InvertedIndex(path,"url_id");
+		Id_Title_index = new InvertedIndex(path,"id_title");
+		Id_ContentLength_index = new InvertedIndex(path,"id_contentlength");
+		Id_LastModified_index = new InvertedIndex(path,"id_lastmodified");
+		ChildLink_index = new InvertedIndex(path,"childlink");
+		ParentLink_index = new InvertedIndex(path,"parentlink");
+		Docid_Key_index = new InvertedIndex(path,"docid_key");
+		Key_Docid_index = new InvertedIndex(path,"key_docid");
+		TitleId_Key_index =new InvertedIndex(path,"title_key");
+		Key_TitleId_index =new InvertedIndex(path,"key_titleid");
+		//Newly added table
+		Key_Weight_index =new InvertedIndex(path,"key_weight");
+		TitlePhrase_Weight_index = new InvertedIndex(path,"titlephrase_weight");
+		Docid_SortKey_index = new InvertedIndex(path,"docid_sortkey");
+		TitleId_SortKey_index = new InvertedIndex(path,"titleid_sortkey");
+		Docid_KeyPos_index = new InvertedIndex(path,"docid_keypos"); //stored words with position, used for phrase search
+		
+		Docid_KeyWeight_index = new InvertedIndex(path,"docid_keyweight");
+		Docid_VectorLength_index = new InvertedIndex(path,"docid_vectorlength");
+		Titid_KeyWeight_index = new InvertedIndex(path,"titid_keyweight");
+		Titid_VectorLength_index = new InvertedIndex(path,"titid_vectorlength");
+	}
+
 	public int getRequiredNumber() throws IOException
 	{
 		return Required_Number;

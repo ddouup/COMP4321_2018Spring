@@ -25,7 +25,6 @@ public class PRINTOUT
 	public	static InvertedIndex Docid_SortKey_index;
 	public	static InvertedIndex TitleId_SortKey_index;
 	public	static InvertedIndex Docid_KeyPos_index;
-	public	static InvertedIndex Docid_String_index;
 	
 	public	static InvertedIndex Docid_KeyWeight_index;
 	public	static InvertedIndex Docid_VectorLength_index;
@@ -52,7 +51,6 @@ public class PRINTOUT
 		Docid_SortKey_index = new InvertedIndex("project","docid_sortkey");
 		TitleId_SortKey_index = new InvertedIndex("project","titleid_sortkey");
 		Docid_KeyPos_index = new InvertedIndex("project","docid_keypos");
-		Docid_String_index = new InvertedIndex("project","docid_string");
 		
 		Docid_KeyWeight_index = new InvertedIndex("project","docid_keyweight");
 		Docid_VectorLength_index = new InvertedIndex("project","docid_vectorlength");

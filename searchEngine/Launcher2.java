@@ -26,7 +26,6 @@ public class Launcher2 {
 	public	static InvertedIndex Docid_SortKey_index;
 	public	static InvertedIndex TitleId_SortKey_index;
 	public	static InvertedIndex Docid_KeyPos_index;
-	public	static InvertedIndex Docid_String_index;
 
 	Launcher2() throws IOException
 	{	
@@ -48,7 +47,6 @@ public class Launcher2 {
 		Docid_SortKey_index = new InvertedIndex("project","docid_sortkey");
 		TitleId_SortKey_index = new InvertedIndex("project","titleid_sortkey");
 		Docid_KeyPos_index = new InvertedIndex("project","docid_keypos"); //stored words with position, used for phrase search
-		Docid_String_index = new InvertedIndex("project","docid_string");
 	}
 	
 	public int getRequiredNumber() throws IOException

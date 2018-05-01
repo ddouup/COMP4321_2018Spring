@@ -41,11 +41,7 @@
 			    Vector<String> que = new Vector<String>();
 			    Vector<String> res = new Vector<String>();
 			    String tmp="";
-				if(ck == null)
-				{
-				     out.println("It is the first time you visit this page");
-				}
-				else
+				if(ck != null)
 				{
 				     for(int i = 0; i < ck.length; i++)
 				     {
@@ -61,45 +57,43 @@
 						}
 				     }
 				}
-            String res="";
-			String query = request.getParameter("search_text");
-			if(query!=null)
-			{
-				SearchEngine s = new SearchEngine();
-				Vector<PageList> result = s.search(query);
-				for(int i = 0; i < result.size(); i++)
-				{	
-				res=res+result.get(i).url+";";
-				%>
-				<div>
-					<h4>Query: <%= query%></h4>
-					<h5>Number: <%= i+1%></h5>
-					<h5>Score: <%= result.get(i).score%></h5>
-					<h5><%= result.get(i).title%></h5>
-					<h5><a href="<%= result.get(i).url%>" target="_blank" style="color:blue;"><%= result.get(i).url%></a></h5>
-					<h5><%= result.get(i).key%></h5>
-					<h5><%= result.get(i).datesizeofpage%></h5>
-					<h5>Parent links: <br><%=result.get(i).parentlink%></h5>
-					<h5>Child links: <br><%=result.get(i).childlink%></h5>
-				</div>
-				<%
+				tmp="";
+				String query = request.getParameter("search_text");
+				if(query!=null)
+				{
+					%><div><h4>Query: <%= query%></h4></div><%
+					SearchEngine s = new SearchEngine("/home/ddou/comp4321/project");
+					Vector<PageList> result = s.search(query);
+					for(int i = 0; i < result.size(); i++)
+					{	
+						tmp=tmp+result.get(i).url+";";
+					%>
+					<div>
+						<h5>Number: <%= i+1%></h5>
+						<h5>Score: <%= result.get(i).score%></h5>
+						<h5><%= result.get(i).title%></h5>
+						<h5><a href="<%= result.get(i).url%>" target="_blank" style="color:blue;"><%= result.get(i).url%></a></h5>
+						<h5><%= result.get(i).key%></h5>
+						<h5><%= result.get(i).datesizeofpage%></h5>
+						<h5>Parent links: <br><%=result.get(i).parentlink%></h5>
+						<h5>Child links: <br><%=result.get(i).childlink%></h5>
+					</div>
+					<%
+					}
+					Cookie newck = new Cookie("Query",query);
+					Cookie newckr =new Cookie("Result",tmp);
+					newck.setMaxAge(60*60); // 1 hour
+					newckr.setMaxAge(60*60);
+					response.addCookie(newck);
+					response.addCookie(newckr);
 				}
-				Cookie newck = new Cookie("Query",query);
-				Cookie newckr =new Cookie("Result",res);
-				newck.setMaxAge(60*60); // 1 hour
-				newckr.setMaxAge(60*60);
-				response.addCookie(newck);
-				response.addCookie(newckr);
-			}
-			else
-			{%>
-				<div>
-				<h5>Please input valid characters.</h5>
-				</div>
-			<%}
-
+				else
+				{%>
+					<div>
+					<h5>Please input valid characters.</h5>
+					</div>
+				<%}
 			%>
-
 		</div>
 	</div>
 	<div class="grid_3">

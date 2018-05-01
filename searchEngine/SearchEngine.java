@@ -63,7 +63,17 @@ public class SearchEngine
 		TitID=new Vector<Integer>();
 		Doc=new Vector<DocCom>();
 		Tit=new Vector<DocCom>();
-		
+		wei=new Vector<Integer>();
+		Phrase = new Vector<String>();
+		sqrtt=0.0;
+	}
+	public SearchEngine(String path) throws IOException
+	{
+		launcher = new Launcher(path);
+		DocID=new Vector<Integer>();
+		TitID=new Vector<Integer>();
+		Doc=new Vector<DocCom>();
+		Tit=new Vector<DocCom>();
 		wei=new Vector<Integer>();
 		Phrase = new Vector<String>();
 		sqrtt=0.0;
@@ -424,6 +434,7 @@ public class SearchEngine
 	
 	public static void main (String[] args) throws IOException
 	{
+		//SearchEngine searchEngine = new SearchEngine("/home/ddou/comp4321/project");
 		SearchEngine searchEngine = new SearchEngine();
 		Vector<PageList> result = searchEngine.search("\"hong kong\"");
 		//\"hong kong\"  \"hong kong\" alumni \"a computer science technology a\" hkust hkust
