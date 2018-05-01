@@ -130,7 +130,6 @@ public class InvertedIndex
 		Vector<String> result = new Vector<String>();
         FastIterator iter = hashtable.keys();
         String key;
-        result.add("");
         while( (key=(String)iter.next()) != null ) 
         {
                 result.add(key);

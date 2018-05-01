@@ -35,7 +35,6 @@
 	</div>
 	<div class="register">
 		<div class="container">
-			<%= HelloWorld.getName() %>
 			<%--Get request parameter--%>
 			<%
 			String query = request.getParameter("search_text");
