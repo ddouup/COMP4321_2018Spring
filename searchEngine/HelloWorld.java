@@ -3,9 +3,9 @@ package searchEngine;
 import java.io.IOException;
 
 public class HelloWorld {
-	public static String name;
+	public static String name="dou";
 	
-	HelloWorld() throws IOException
+	public HelloWorld() throws IOException
 	{
 		System.out.println("Hello World");
 	}
@@ -14,7 +14,7 @@ public class HelloWorld {
 		name = newname;
 	}
 	
-	public static void getName() {
-		System.out.println(name);
+	public static String getName() {
+		return name;
 	}
 }

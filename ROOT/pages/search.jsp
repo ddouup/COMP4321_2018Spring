@@ -1,5 +1,4 @@
-<%@page language="java" import="java.util.*" %>
-<%@ page import="searchEngine.HelloWorld" %>
+<%@ page language="java" import="java.util.*,searchEngine.*" %>
 <html>
 <head>
 <title>Search</title>
@@ -36,13 +35,31 @@
 	</div>
 	<div class="register">
 		<div class="container">
+			<%= HelloWorld.getName() %>
 			<%--Get request parameter--%>
 			<%
 			String query = request.getParameter("search_text");
 			if(query!=null)
 			{
 				out.println("You input "+query);
-				HelloWorld h = new HelloWorld();
+				SearchEngine s = new SearchEngine();
+				Vector<PageList> result = s.search(query);
+				out.println(result.size());
+				for(int i = 0; i < result.size(); i++)
+				{	
+				%>
+				<div>
+					<h5>Number: <%= i+1%></h5>
+					<h5>Score: <%= result.get(i).score%></h5>
+					<h5><%= result.get(i).title%></h5>
+					<h5><a href="<%= result.get(i).url%>" target="_blank" style="color:blue;"><%= result.get(i).url%></a></h5>
+					<h5><%= result.get(i).key%></h5>
+					<h5><%= result.get(i).datesizeofpage%></h5>
+					<h5>Parent links: <br><%=result.get(i).parentlink%></h5>
+					<h5>Child links: <br><%=result.get(i).childlink%></h5>
+				</div>
+				<%
+				}
 			}
 			else
 			{

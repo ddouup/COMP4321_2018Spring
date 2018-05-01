@@ -27,7 +27,7 @@ public class Crawler
 	private static int Required_Number = 30;
 	private static int count;
 	private String url;
-	Crawler(String _url)
+	public Crawler(String _url)
 	{
 		url = _url;
 		count = 1;
