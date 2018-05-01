@@ -37,6 +37,31 @@
 		<div class="container">
 			<%--Get request parameter--%>
 			<%
+			    Cookie ck[] = request.getCookies();
+			    Vector<String> que = new Vector<String>();
+			    Vector<String> res = new Vector<String>();
+			    String tmp="";
+				if(ck == null)
+				{
+				     out.println("It is the first time you visit this page");
+				}
+				else
+				{
+				     for(int i = 0; i < ck.length; i++)
+				     {
+					if(ck[i].getName().equals("Query"))
+						{
+							tmp = ck[i].getValue();
+							que.add(tmp);
+						}
+					else
+						{
+							tmp = ck[i].getValue();
+							res.add(tmp);
+						}
+				     }
+				}
+            String res="";
 			String query = request.getParameter("search_text");
 			if(query!=null)
 			{
@@ -44,6 +69,7 @@
 				Vector<PageList> result = s.search(query);
 				for(int i = 0; i < result.size(); i++)
 				{	
+				res=res+result.get(i).url+";";
 				%>
 				<div>
 					<h4>Query: <%= query%></h4>
@@ -58,6 +84,12 @@
 				</div>
 				<%
 				}
+				Cookie newck = new Cookie("Query",query);
+				Cookie newckr =new Cookie("Result",res);
+				newck.setMaxAge(60*60); // 1 hour
+				newckr.setMaxAge(60*60);
+				response.addCookie(newck);
+				response.addCookie(newckr);
 			}
 			else
 			{%>
@@ -67,6 +99,7 @@
 			<%}
 
 			%>
+
 		</div>
 	</div>
 	<div class="grid_3">

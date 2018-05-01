@@ -335,7 +335,6 @@ public class SearchEngine
 		return new_result;
     }
     
-    
 
 	public Vector<PageList> search(String query) throws IOException
 	{
@@ -347,7 +346,6 @@ public class SearchEngine
         result=updateterwei(result);
 		
 		Sort(result,wei);
-		
 		for(int i=0;i<Doc.size();i++)
 		{   
 			if(i>10)
@@ -399,7 +397,6 @@ public class SearchEngine
 			page.score=Doc.get(i).cossin;
 			list.add(page);
 		}
-		
 		return list;
 	}
 	

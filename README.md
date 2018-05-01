@@ -23,10 +23,12 @@ java -cp lib/*:. Launcher
 compile:
 ```
 javac -cp .:lib/* DataProcess.java
+javac -cp .:lib/* Launcher2.java
 ```
 run:
 ```
 java -cp lib/*:. DataProcess
+java -cp lib/*:. Launcher2
 ```
 ## Search(Interface used by the server)
 compile:
@@ -36,17 +38,6 @@ javac -cp .:lib/* SearchEngine.java
 run:
 ```
 java -cp lib/*:. SearchEngine
-```
-
-
-## Test Program
-compile:
-```
-javac -cp .:lib/* YmyTest.java
-```
-run:
-```
-java -cp lib/*:. YmyTest
 ```
 
 ## TODO:
