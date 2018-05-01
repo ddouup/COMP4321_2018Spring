@@ -4,14 +4,17 @@ DOU, Daihui   (ddou@connect.ust.hk) <br>
 TANG, Can-yao   (ctangaf@connect.ust.hk) <br>
 YANG, Mingyuan   (myangah@connect.ust.hk) <br>
 ## File Structure
-Replace ROOT on Tomcat by this one. <br>
-Put all .class file in WEB-INF/classes <br>
-Put all .jar file in WEB-INF/lib <br>
-Put .jsp files in pages/ <br>
+Put all .class file in ROOT/WEB-INF/classes <br>
+Put all .jar file in ROOT/WEB-INF/lib <br>
+Put .jsp files in ROOT/pages/ <br>
+Put index.html files in ROOT/ <br>
+Put .css files in ROOT/css/ <br>
+Put .js files in ROOT/js/ <br>
+Put .img files in ROOT/images/ <br>
 ## Crawler
 compile:
 ```
-javac -cp lib/jdbm-1.0.jar InvertedIndex.java
+javac -cp .:lib/* InvertedIndex.java
 javac -cp .:lib/* Crawler.java
 javac -cp .:lib/* Launcher.java
 ```
@@ -35,24 +38,15 @@ compile:
 ```
 javac -cp .:lib/* SearchEngine.java
 ```
-run:
+run (query hardcoded in searchEngine.java):
 ```
 java -cp lib/*:. SearchEngine
 ```
 
 ## TODO:
 ```
-1.Server
-2.Phrase search
-3.autocomplete
-4.pagerank
-5.others...
+1.autocomplete
+2.pagerank
+3.others...
 
-```
-
-## Questions:
-```
-1. Link is a file?
-2. Chinese version?
-3. Authentication required?
 ```
